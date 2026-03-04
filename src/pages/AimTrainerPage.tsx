@@ -38,8 +38,6 @@ export function AimTrainerPage({ onNavigateMenu, theme }: AimTrainerPageProps) {
   const [isOptionOpen, setIsOptionOpen] = useState(false);
   const score = useAimStore((state) => state.score);
   const misses = useAimStore((state) => state.misses);
-  const totalClicks = useAimStore((state) => state.totalClicks);
-  const offTargetClicks = useAimStore((state) => state.offTargetClicks);
   const gameState = useAimStore((state) => state.gameState);
   const targetDuration = useAimStore((state) => state.targetDuration);
   const targetStyle = useAimStore((state) => state.targetStyle);
@@ -55,8 +53,6 @@ export function AimTrainerPage({ onNavigateMenu, theme }: AimTrainerPageProps) {
   const setTargetSizeMultiplier = useAimStore((state) => state.setTargetSizeMultiplier);
   const setTargetLifetimeMs = useAimStore((state) => state.setTargetLifetimeMs);
   const resetGame = useAimStore((state) => state.resetGame);
-  const accuracy = totalClicks > 0 ? ((totalClicks - offTargetClicks) / totalClicks) * 100 : 0;
-  const accuracyText = `${accuracy.toFixed(1)}%`;
   const remainingTargets = Math.max(0, 30 - (score + misses));
   const scoreText = String(score).padStart(2, "0");
   const remainingText = String(remainingTargets).padStart(2, "0");
@@ -116,7 +112,7 @@ export function AimTrainerPage({ onNavigateMenu, theme }: AimTrainerPageProps) {
   }, []);
 
   useEffect(() => {
-    if (gameState !== "idle") {
+    if (gameState === "playing" || gameState === "paused") {
       setIsOptionOpen(false);
     }
   }, [gameState]);
@@ -171,6 +167,9 @@ export function AimTrainerPage({ onNavigateMenu, theme }: AimTrainerPageProps) {
               </p>
             </div>
           </div>
+          <div className="pointer-events-none absolute bottom-3 right-3">
+            <span className="aim-speed-chip">{targetDuration}ms</span>
+          </div>
           {gameState === "playing" ? (
             <div className="absolute left-3 top-3">
               <button
@@ -186,17 +185,24 @@ export function AimTrainerPage({ onNavigateMenu, theme }: AimTrainerPageProps) {
           {gameState === "paused" ? (
             <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
               <div className="aim-arena-idle-overlay" />
-              <div className="pointer-events-auto relative z-10 flex flex-col items-center gap-2 rounded-xl border border-slate-200/60 bg-slate-950/70 px-4 py-4 shadow-[0_12px_26px_rgba(2,6,23,0.38)] backdrop-blur-sm">
+              <div className="pointer-events-auto aim-pause-panel relative z-10 flex flex-col items-center gap-2">
                 <button
                   type="button"
-                  className="aim-arena-start-button is-option min-w-[132px]"
-                  onClick={resetGame}
+                  className="aim-arena-start-button is-pause-new min-w-[132px]"
+                  onClick={() => startGame()}
                 >
                   NEW GAME
                 </button>
                 <button
                   type="button"
-                  className="aim-arena-start-button is-start min-w-[132px]"
+                  className="aim-arena-start-button is-pause-menu min-w-[132px]"
+                  onClick={onNavigateMenu}
+                >
+                  MENU
+                </button>
+                <button
+                  type="button"
+                  className="aim-arena-start-button is-pause-resume min-w-[132px]"
                   onClick={resumeGame}
                 >
                   RESUME
@@ -204,7 +210,7 @@ export function AimTrainerPage({ onNavigateMenu, theme }: AimTrainerPageProps) {
               </div>
             </div>
           ) : null}
-          {gameState === "idle" ? (
+          {gameState === "idle" || gameState === "finished" ? (
             <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
               <div className="aim-arena-idle-overlay" />
               <div className="relative z-10 flex flex-col items-center gap-3">
@@ -218,7 +224,7 @@ export function AimTrainerPage({ onNavigateMenu, theme }: AimTrainerPageProps) {
                     }}
                     aria-label="게임 시작"
                   >
-                    START
+                    {gameState === "finished" ? "RESTART" : "START"}
                   </button>
                   <button
                     type="button"
@@ -291,49 +297,6 @@ export function AimTrainerPage({ onNavigateMenu, theme }: AimTrainerPageProps) {
                     </div>
                   </div>
                 ) : null}
-              </div>
-            </div>
-          ) : null}
-          {gameState === "finished" ? (
-            <div className="pointer-events-none absolute left-1/2 top-[40%] -translate-x-1/2 -translate-y-1/2">
-              <div className="flex flex-col items-center gap-3">
-                <div className="rounded-2xl border border-slate-200/62 bg-slate-950/62 px-8 py-6 text-center shadow-[0_14px_30px_rgba(2,6,23,0.35)] backdrop-blur-sm dark:border-slate-200/55">
-                  <p className="m-0 text-xs font-semibold tracking-[0.14em] text-slate-300">RESULT</p>
-                  <div className="aim-result-lines">
-                    <p className="aim-result-line">
-                      <span className="aim-result-label is-hit">HIT</span>
-                      <span className="aim-result-value">{score}</span>
-                    </p>
-                    <p className="aim-result-line">
-                      <span className="aim-result-label is-miss">MISS</span>
-                      <span className="aim-result-value">{misses}</span>
-                    </p>
-                    <p className="aim-result-line is-accuracy-row">
-                      <span className="aim-result-label is-accuracy">ACCURACY</span>
-                      <span className="aim-result-value is-accuracy">{accuracyText}</span>
-                    </p>
-                  </div>
-                </div>
-                <button
-                  type="button"
-                  className="pointer-events-auto inline-flex h-12 w-12 items-center justify-center rounded-full border border-slate-200/65 bg-slate-800/85 text-slate-100 shadow-[0_10px_22px_rgba(2,6,23,0.38)] transition hover:scale-105 hover:bg-slate-700/90 hover:border-slate-100/90 dark:border-slate-300/55 dark:bg-slate-900/75 dark:hover:bg-slate-800/88"
-                  onClick={() => startGame()}
-                  aria-label="다시하기"
-                >
-                  <svg
-                    viewBox="0 0 24 24"
-                    aria-hidden="true"
-                    className="h-6 w-6 drop-shadow-[0_1px_2px_rgba(0,0,0,0.35)]"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2.4"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  >
-                    <path d="M21 12a9 9 0 1 1-2.64-6.36" />
-                    <path d="M21 3v6h-6" />
-                  </svg>
-                </button>
               </div>
             </div>
           ) : null}

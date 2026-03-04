@@ -287,12 +287,12 @@ body {
 }
 
 .menu-card-tone-aim.menu-card-active {
-  border-color: #c4b5fd;
-  background: linear-gradient(135deg, #f5f3ff 0%, #ffffff 52%, #f0fdfa 100%);
+  border-color: #bfdbfe;
+  background: linear-gradient(135deg, #eff6ff 0%, #ffffff 52%, #ecfeff 100%);
 }
 
 :root[data-theme="dark"] .menu-card-tone-aim.menu-card-active {
-  border-color: rgba(196, 181, 253, 0.7);
+  border-color: rgba(196, 181, 253, 0.52);
   background: linear-gradient(135deg, rgba(30, 41, 59, 0.96) 0%, rgba(30, 41, 59, 0.9) 52%, rgba(67, 56, 202, 0.2) 100%);
 }
 
@@ -506,18 +506,38 @@ body {
 }
 
 .aim-arena-canvas {
+  position: relative;
   width: 100%;
   border-radius: 18px;
-  border: 1px solid color-mix(in srgb, #6e8eb6 58%, var(--border));
-  background:
-    radial-gradient(circle at 20% 15%, rgba(110, 146, 194, 0.26), transparent 36%),
-    radial-gradient(circle at 80% 12%, rgba(109, 40, 217, 0.18), transparent 34%),
-    linear-gradient(180deg, rgba(14, 24, 40, 0.94), rgba(10, 17, 30, 0.97));
-  box-shadow:
-    inset 0 0 0 1px rgba(168, 195, 229, 0.2),
-    0 16px 34px rgba(8, 12, 22, 0.35);
+  border: none;
+  background: transparent;
+  box-shadow: none;
   overflow: hidden;
   cursor: crosshair;
+}
+
+.aim-arena-canvas::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  box-sizing: border-box;
+  border-radius: inherit;
+  border: none;
+  box-shadow: none;
+}
+
+.aim-arena-canvas canvas {
+  display: block;
+}
+
+.aim-arena-canvas > div {
+  border-radius: inherit;
+  overflow: hidden;
+}
+
+.aim-arena-canvas canvas {
+  border-radius: inherit;
 }
 
 .aim-target-duration {
@@ -672,6 +692,57 @@ body {
   background: linear-gradient(180deg, rgba(57, 70, 90, 0.96), rgba(40, 52, 72, 0.96));
 }
 
+.aim-pause-panel .aim-arena-start-button.is-pause-new {
+  border-color: rgba(251, 191, 36, 0.66);
+  background: linear-gradient(180deg, rgba(146, 64, 14, 0.84), rgba(120, 53, 15, 0.88));
+  color: #fff7ed;
+}
+
+.aim-pause-panel .aim-arena-start-button.is-pause-new:hover {
+  border-color: rgba(253, 230, 138, 0.84);
+  background: linear-gradient(180deg, rgba(180, 83, 9, 0.88), rgba(146, 64, 14, 0.92));
+}
+
+.aim-pause-panel .aim-arena-start-button.is-pause-menu {
+  border-color: rgba(120, 138, 162, 0.62);
+  background: linear-gradient(180deg, rgba(55, 65, 81, 0.82), rgba(41, 49, 64, 0.86));
+  color: #cbd5e1;
+}
+
+.aim-pause-panel .aim-arena-start-button.is-pause-menu:hover {
+  border-color: rgba(148, 163, 184, 0.74);
+  background: linear-gradient(180deg, rgba(66, 78, 96, 0.86), rgba(49, 61, 79, 0.9));
+}
+
+.aim-pause-panel .aim-arena-start-button.is-pause-resume {
+  border-color: rgba(125, 211, 252, 0.76);
+  background: linear-gradient(180deg, rgba(14, 116, 144, 0.95), rgba(8, 86, 119, 0.97));
+  color: #f0faff;
+}
+
+.aim-pause-panel .aim-arena-start-button.is-pause-resume:hover {
+  border-color: rgba(186, 230, 253, 0.9);
+  background: linear-gradient(180deg, rgba(15, 132, 162, 0.96), rgba(10, 97, 132, 0.98));
+}
+
+:root[data-theme="light"] .aim-pause-panel .aim-arena-start-button.is-pause-new {
+  border-color: rgba(251, 191, 36, 0.68);
+  background: linear-gradient(180deg, rgba(254, 243, 199, 0.9), rgba(253, 230, 138, 0.86));
+  color: #92400e;
+}
+
+:root[data-theme="light"] .aim-pause-panel .aim-arena-start-button.is-pause-menu {
+  border-color: rgba(148, 163, 184, 0.66);
+  background: linear-gradient(180deg, rgba(226, 232, 240, 0.78), rgba(203, 213, 225, 0.74));
+  color: #475569;
+}
+
+:root[data-theme="light"] .aim-pause-panel .aim-arena-start-button.is-pause-resume {
+  border-color: rgba(14, 165, 233, 0.8);
+  background: linear-gradient(180deg, rgba(125, 211, 252, 0.58), rgba(56, 189, 248, 0.52));
+  color: #0b4563;
+}
+
 .aim-style-picker {
   min-width: 212px;
   border-radius: 14px;
@@ -808,6 +879,22 @@ body {
   box-shadow: 0 8px 20px rgba(2, 6, 23, 0.26);
   backdrop-filter: blur(4px);
   overflow: hidden;
+}
+
+.aim-speed-chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 24px;
+  border-radius: 999px;
+  border: 1px solid rgba(148, 163, 184, 0.58);
+  background: rgba(15, 23, 42, 0.46);
+  padding: 2px 9px;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: rgba(226, 232, 240, 0.86);
+  text-shadow: 0 1px 4px rgba(2, 6, 23, 0.32);
 }
 
 .aim-top-scoreboard::before,
@@ -1581,14 +1668,22 @@ label {
 }
 
 :root[data-theme="light"] .aim-arena-canvas {
-  border: 1px solid rgba(148, 163, 184, 0.52);
-  background:
-    radial-gradient(circle at 18% 14%, rgba(148, 163, 184, 0.24), transparent 38%),
-    radial-gradient(circle at 82% 10%, rgba(56, 189, 248, 0.18), transparent 34%),
-    linear-gradient(180deg, rgba(241, 245, 249, 0.94), rgba(226, 232, 240, 0.96));
-  box-shadow:
-    inset 0 0 0 1px rgba(203, 213, 225, 0.66),
-    0 12px 26px rgba(15, 23, 42, 0.12);
+  border: none;
+  background: transparent;
+  box-shadow: none;
+}
+
+:root[data-theme="light"] .aim-arena-canvas::after {
+  border: none;
+}
+
+:root[data-theme="dark"] .aim-arena-canvas {
+  border: none;
+  box-shadow: 0 8px 18px rgba(15, 23, 42, 0.22);
+}
+
+:root[data-theme="dark"] .aim-arena-canvas::after {
+  border: none;
 }
 
 :root[data-theme="light"] .aim-arena-idle-overlay {
@@ -1665,6 +1760,13 @@ label {
   border: 1px solid rgba(148, 163, 184, 0.62);
   background: rgba(248, 250, 252, 0.84);
   box-shadow: 0 8px 18px rgba(15, 23, 42, 0.12);
+}
+
+:root[data-theme="light"] .aim-speed-chip {
+  border-color: rgba(148, 163, 184, 0.7);
+  background: rgba(248, 250, 252, 0.78);
+  color: rgba(51, 65, 85, 0.86);
+  text-shadow: 0 1px 3px rgba(203, 213, 225, 0.35);
 }
 
 :root[data-theme="light"] .aim-top-scoreboard::before {
