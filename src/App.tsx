@@ -3,11 +3,47 @@ import { HashRouter, Navigate, Route, Routes, useLocation, useNavigate } from "r
 import { useTheme } from "./hooks/useTheme";
 import { MenuPage } from "./pages/MenuPage";
 
-const ShufflePage = lazy(() => import("./pages/ShufflePage").then((module) => ({ default: module.ShufflePage })));
+const DEV_ROUTE_LOADING_DELAY_MS = 650;
+
+async function withDevRouteDelay<T>(loader: () => Promise<T>) {
+  if (!import.meta.env.DEV) {
+    return loader();
+  }
+
+  const [module] = await Promise.all([
+    loader(),
+    new Promise<void>((resolve) => window.setTimeout(resolve, DEV_ROUTE_LOADING_DELAY_MS)),
+  ]);
+
+  return module;
+}
+
+const ShufflePage = lazy(() =>
+  withDevRouteDelay(() => import("./pages/ShufflePage")).then((module) => ({ default: module.ShufflePage }))
+);
 const AimTrainerPage = lazy(() =>
-  import("./pages/AimTrainerPage").then((module) => ({ default: module.AimTrainerPage }))
+  withDevRouteDelay(() => import("./pages/AimTrainerPage")).then((module) => ({ default: module.AimTrainerPage }))
 );
 const GA_MEASUREMENT_ID = "G-65CWGN0X87";
+
+function RouteLoadingFallback() {
+  return (
+    <div className="route-loading-shell" role="status" aria-live="polite" aria-label="화면 로딩 중">
+      <div className="route-loading-card">
+        <div className="route-loading-glow" />
+        <div className="route-loading-header" />
+        <div className="route-loading-line is-strong" />
+        <div className="route-loading-line" />
+        <div className="route-loading-line is-short" />
+        <div className="route-loading-dots" aria-hidden="true">
+          <span />
+          <span />
+          <span />
+        </div>
+      </div>
+    </div>
+  );
+}
 
 function RoutePageViewTracker() {
   const location = useLocation();
@@ -71,7 +107,7 @@ function AppFrame() {
         </div>
       </div>
       <div key={location.pathname} className="page-transition-layer page-transition-enter">
-        <Suspense fallback={<div className="mx-auto max-w-[1120px] px-3 py-4 text-sm text-slate-400">Loading...</div>}>
+        <Suspense fallback={<RouteLoadingFallback />}>
           <Routes>
             <Route path="/" element={<MenuPage />} />
             <Route path="/shuffle" element={<ShufflePage onNavigateMenu={() => navigate("/")} />} />
