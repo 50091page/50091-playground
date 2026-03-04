@@ -439,16 +439,16 @@ body {
   position: absolute;
   right: 12px;
   bottom: 8px;
-  width: 56px;
-  height: 56px;
+  width: 73px;
+  height: 73px;
   object-fit: contain;
   opacity: 0.95;
   user-select: none;
 }
 
 .menu-card-deco-image-small {
-  width: 42px;
-  height: 42px;
+  width: 55px;
+  height: 55px;
   right: 20px;
   bottom: 10px;
 }
