@@ -123,6 +123,7 @@ export function RowSwapGrid({
                 className={`row-lock-toggle${locks[index] ? " is-locked" : ""}`}
                 onClick={() => onLockChange(index, !locks[index])}
                 aria-pressed={locks[index]}
+                tabIndex={-1}
                 disabled={isBusy}
               >
                 <span>{label}</span>
