@@ -493,6 +493,115 @@
   color: #ff5a5a;
 }
 
+:root[data-theme="light"] .shv0-back-btn {
+  border-color: #cbd5e1;
+  background: linear-gradient(180deg, #f8fafc, #eef2f7);
+  color: #1e293b;
+  box-shadow: 0 6px 14px rgba(15, 23, 42, 0.1);
+}
+
+:root[data-theme="light"] .shv0-back-btn:hover {
+  border-color: #94a3b8;
+  background: linear-gradient(180deg, #ffffff, #f1f5f9);
+  color: #0f172a;
+}
+
+:root[data-theme="light"] .shv0-back-btn:focus-visible {
+  box-shadow:
+    0 0 0 2px rgba(255, 255, 255, 0.9),
+    0 0 0 5px rgba(59, 130, 246, 0.25);
+}
+
+:root[data-theme="light"] .shv0-card-title {
+  color: #0f172a;
+}
+
+:root[data-theme="light"] .shv0-clear-btn {
+  border-color: #cbd5e1;
+  color: #64748b;
+}
+
+:root[data-theme="light"] .shv0-clear-btn:hover {
+  border-color: rgba(239, 68, 68, 0.5);
+  background: rgba(239, 68, 68, 0.12);
+  color: #dc2626;
+}
+
+:root[data-theme="light"] .shv0-card.is-lol .shv0-row.is-locked {
+  background: #eef4ff;
+  box-shadow: inset 0 0 0 1px #8eb1ff;
+}
+
+:root[data-theme="light"] .shv0-card.is-pubg .shv0-row.is-locked {
+  background: #fff1e5;
+  box-shadow: inset 0 0 0 1px #f0a55f;
+}
+
+:root[data-theme="light"] .shv0-card.is-lol .shv0-role {
+  background: linear-gradient(180deg, #7394cb, #5f7fb4);
+  color: #ffffff;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.25);
+}
+
+:root[data-theme="light"] .shv0-card.is-pubg .shv0-role {
+  background: linear-gradient(180deg, #c28450, #a86d3e);
+  color: #fff6ed;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+:root[data-theme="light"] .shv0-card.is-lol .shv0-row.is-locked .shv0-input {
+  background: #f7faff;
+  border-color: #9bb8e8;
+  color: #1e293b;
+}
+
+:root[data-theme="light"] .shv0-card.is-lol .shv0-row.is-locked .shv0-input::placeholder {
+  color: #7b8ba3;
+}
+
+:root[data-theme="light"] .shv0-card.is-pubg .shv0-row.is-locked .shv0-input {
+  background: #fff8f0;
+  border-color: #e2b487;
+  color: #3b2a1a;
+}
+
+:root[data-theme="light"] .shv0-card.is-pubg .shv0-row.is-locked .shv0-input::placeholder {
+  color: #9d7a57;
+}
+
+:root[data-theme="light"] .shv0-card.is-lol .shv0-row.is-locked .shv0-arrow {
+  color: #7590ba;
+}
+
+:root[data-theme="light"] .shv0-card.is-pubg .shv0-row.is-locked .shv0-arrow {
+  color: #b48761;
+}
+
+:root[data-theme="light"] .shv0-action-btn {
+  color: #334155;
+}
+
+:root[data-theme="light"] .shv0-action-btn.is-outline {
+  border-color: #cbd5e1;
+  background: #f8fafc;
+  color: #0f172a;
+}
+
+:root[data-theme="light"] .shv0-action-btn.is-ghost {
+  border-color: #cbd5e1;
+  color: #334155;
+}
+
+:root[data-theme="light"] .shv0-action-btn.is-outline:hover {
+  border-color: #94a3b8;
+  background: #f1f5f9;
+}
+
+:root[data-theme="light"] .shv0-action-btn.is-ghost:hover {
+  background: #f1f5f9;
+  color: #0f172a;
+}
+
 @media (max-width: 900px) {
   .shv0-grid {
     grid-template-columns: 1fr;
