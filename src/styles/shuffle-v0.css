@@ -58,8 +58,8 @@
 .shv0-card.is-busy {
   box-shadow:
     0 28px 64px rgba(4, 8, 15, 0.52),
-    0 0 0 1px color-mix(in srgb, var(--shv0-accent) 26%, transparent),
-    0 0 38px color-mix(in srgb, var(--shv0-accent) 16%, transparent),
+    0 0 0 1px color-mix(in srgb, var(--shv0-busy-accent) 26%, transparent),
+    0 0 38px color-mix(in srgb, var(--shv0-busy-accent) 16%, transparent),
     inset 0 1px 0 rgba(255, 255, 255, 0.07);
 }
 
@@ -80,9 +80,9 @@
     115deg,
     transparent 0%,
     transparent 28%,
-    color-mix(in srgb, var(--shv0-accent) 14%, transparent) 44%,
-    color-mix(in srgb, var(--shv0-accent) 32%, transparent) 50%,
-    color-mix(in srgb, var(--shv0-accent) 14%, transparent) 56%,
+    color-mix(in srgb, var(--shv0-busy-accent) 14%, transparent) 44%,
+    color-mix(in srgb, var(--shv0-busy-accent) 32%, transparent) 50%,
+    color-mix(in srgb, var(--shv0-busy-accent) 14%, transparent) 56%,
     transparent 72%,
     transparent 100%
   );
@@ -95,10 +95,12 @@
   --shv0-accent: #6ca5ff;
   --shv0-accent-strong: #2f78ff;
   --shv0-accent-soft: rgba(108, 165, 255, 0.18);
+  --shv0-busy-accent: var(--shv0-accent);
   --shv0-button-start: var(--shv0-accent);
   --shv0-button-end: var(--shv0-accent-strong);
   --shv0-button-text: #08111d;
   --shv0-button-shadow: var(--shv0-accent);
+  --shv0-button-busy-shadow: var(--shv0-button-shadow);
   --shv0-role-bg: linear-gradient(135deg, rgba(48, 88, 154, 0.92), rgba(27, 52, 90, 0.92));
   --shv0-lock-bg: linear-gradient(180deg, #61a7ff, #2b7dff);
 }
@@ -107,10 +109,12 @@
   --shv0-accent: #ffba63;
   --shv0-accent-strong: #ff8b24;
   --shv0-accent-soft: rgba(255, 186, 99, 0.18);
+  --shv0-busy-accent: var(--shv0-accent);
   --shv0-button-start: var(--shv0-accent);
   --shv0-button-end: var(--shv0-accent-strong);
   --shv0-button-text: #08111d;
   --shv0-button-shadow: var(--shv0-accent);
+  --shv0-button-busy-shadow: var(--shv0-button-shadow);
   --shv0-role-bg: linear-gradient(135deg, rgba(160, 95, 38, 0.94), rgba(92, 50, 16, 0.94));
   --shv0-lock-bg: linear-gradient(180deg, #ffbb5c, #ff8e18);
 }
@@ -119,10 +123,12 @@
   --shv0-accent: #ff7a59;
   --shv0-accent-strong: #ff5130;
   --shv0-accent-soft: rgba(255, 122, 89, 0.18);
+  --shv0-busy-accent: #eef4fd;
   --shv0-button-start: #91a5c9;
   --shv0-button-end: #647796;
   --shv0-button-text: #f7fbff;
   --shv0-button-shadow: #8ea5ca;
+  --shv0-button-busy-shadow: #edf4ff;
   --shv0-role-bg: linear-gradient(135deg, rgba(70, 88, 120, 0.94), rgba(38, 52, 78, 0.94));
   --shv0-lock-bg: linear-gradient(180deg, #ff956d, #ff643e);
 }
@@ -283,9 +289,9 @@
 }
 
 .shv0-row.is-shuffling {
-  border-color: color-mix(in srgb, var(--shv0-accent) 44%, rgba(255, 255, 255, 0.12));
+  border-color: color-mix(in srgb, var(--shv0-busy-accent) 44%, rgba(255, 255, 255, 0.12));
   box-shadow:
-    0 10px 22px color-mix(in srgb, var(--shv0-accent) 10%, transparent),
+    0 10px 22px color-mix(in srgb, var(--shv0-busy-accent) 10%, transparent),
     inset 0 0 0 1px rgba(255, 255, 255, 0.05);
   animation: shv0-row-shuffle 220ms ease-in-out infinite alternate;
 }
@@ -567,8 +573,8 @@
   overflow: hidden;
   filter: brightness(1.03);
   box-shadow:
-    0 22px 34px color-mix(in srgb, var(--shv0-button-shadow) 34%, transparent),
-    0 0 28px color-mix(in srgb, var(--shv0-button-shadow) 20%, transparent),
+    0 22px 34px color-mix(in srgb, var(--shv0-button-busy-shadow) 34%, transparent),
+    0 0 28px color-mix(in srgb, var(--shv0-button-busy-shadow) 20%, transparent),
     inset 0 1px 0 rgba(255, 255, 255, 0.32);
   animation: shv0-button-bounce 420ms ease-in-out infinite;
 }
@@ -685,8 +691,8 @@
 :root[data-theme="light"] .shv0-card.is-busy {
   box-shadow:
     0 24px 48px rgba(15, 23, 42, 0.13),
-    0 0 0 1px color-mix(in srgb, var(--shv0-accent) 20%, transparent),
-    0 0 30px color-mix(in srgb, var(--shv0-accent) 12%, transparent),
+    0 0 0 1px color-mix(in srgb, var(--shv0-busy-accent) 20%, transparent),
+    0 0 30px color-mix(in srgb, var(--shv0-busy-accent) 12%, transparent),
     inset 0 1px 0 rgba(255, 255, 255, 0.88);
 }
 
