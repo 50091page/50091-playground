@@ -120,17 +120,17 @@
 }
 
 .shv0-card.is-overwatch {
-  --shv0-accent: #ff7a59;
-  --shv0-accent-strong: #ff5130;
-  --shv0-accent-soft: rgba(255, 122, 89, 0.18);
-  --shv0-busy-accent: #eef4fd;
-  --shv0-button-start: #91a5c9;
-  --shv0-button-end: #647796;
+  --shv0-accent: #cfdced;
+  --shv0-accent-strong: #93a9c6;
+  --shv0-accent-soft: rgba(216, 228, 245, 0.2);
+  --shv0-busy-accent: #f4f8ff;
+  --shv0-button-start: #b1c1d7;
+  --shv0-button-end: #758aa7;
   --shv0-button-text: #f7fbff;
-  --shv0-button-shadow: #8ea5ca;
-  --shv0-button-busy-shadow: #edf4ff;
+  --shv0-button-shadow: #b8cae1;
+  --shv0-button-busy-shadow: #f4f8ff;
   --shv0-role-bg: linear-gradient(135deg, rgba(70, 88, 120, 0.94), rgba(38, 52, 78, 0.94));
-  --shv0-lock-bg: linear-gradient(180deg, #ff956d, #ff643e);
+  --shv0-lock-bg: linear-gradient(180deg, #cddbee, #7b93b4);
 }
 
 .shv0-card-header {
@@ -170,7 +170,7 @@
 
 .shv0-card.is-overwatch .shv0-card-icon {
   background:
-    radial-gradient(circle at 50% 18%, rgba(255, 133, 72, 0.16), transparent 34%),
+    radial-gradient(circle at 50% 18%, rgba(244, 248, 255, 0.2), transparent 34%),
     linear-gradient(180deg, rgba(74, 88, 112, 0.94), rgba(42, 53, 72, 0.98));
   border-color: rgba(176, 191, 216, 0.2);
   box-shadow:
