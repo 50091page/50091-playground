@@ -13,6 +13,7 @@ type SwapToolPanelProps = {
     left: string;
     right: string;
   };
+  copyRowLabels?: string[];
   allowEmptySwap?: boolean;
   leftPlaceholder?: string;
   rightPlaceholder?: string;
@@ -27,6 +28,7 @@ export function SwapToolPanel({
   leftFallback,
   rightFallback,
   copyHeader,
+  copyRowLabels,
   allowEmptySwap = false,
   leftPlaceholder,
   rightPlaceholder,
@@ -51,6 +53,7 @@ export function SwapToolPanel({
     leftFallback,
     rightFallback,
     copyHeader,
+    copyRowLabels,
   });
 
   return (

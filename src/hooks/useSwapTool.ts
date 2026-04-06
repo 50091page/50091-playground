@@ -22,6 +22,7 @@ type UseSwapToolOptions = {
     left: string;
     right: string;
   };
+  copyRowLabels?: string[];
 };
 
 export const createDefaultSwapToolState = (rows: string[]): SwapToolState => ({
@@ -61,19 +62,26 @@ export function formatRowsForCopy(
   copyHeader?: {
     left: string;
     right: string;
-  }
+  },
+  copyRowLabels?: string[]
 ) {
+  const rowLabels = copyRowLabels?.length === values.length ? copyRowLabels : undefined;
   const leftNames = values.map((pair) => pair.left.trim() || leftFallback);
   const rightNames = values.map((pair) => pair.right.trim() || rightFallback);
   const leftWidth = Math.max(...leftNames.map((name) => name.length));
-  const lines = leftNames.map((leftName, index) => `${leftName.padEnd(leftWidth, " ")}\t${rightNames[index]}`);
+  const rowWidth = rowLabels ? Math.max(...rowLabels.map((label) => label.length)) : 0;
+  const lines = leftNames.map((leftName, index) => {
+    const baseLine = `${leftName.padEnd(leftWidth, " ")}\t${rightNames[index]}`;
+    return rowLabels ? `${rowLabels[index].padEnd(rowWidth, " ")}\t${baseLine}` : baseLine;
+  });
 
   if (!copyHeader) {
     return lines;
   }
 
   const headerWidth = Math.max(leftWidth, copyHeader.left.length);
-  return [`${copyHeader.left.padEnd(headerWidth, " ")}\t${copyHeader.right}`, ...lines];
+  const headerLine = `${copyHeader.left.padEnd(headerWidth, " ")}\t${copyHeader.right}`;
+  return rowLabels ? [`${"".padEnd(rowWidth, " ")}\t${headerLine}`, ...lines] : [headerLine, ...lines];
 }
 
 export function useSwapTool({
@@ -84,6 +92,7 @@ export function useSwapTool({
   leftFallback,
   rightFallback,
   copyHeader,
+  copyRowLabels,
 }: UseSwapToolOptions) {
   const [state, setState] = useLocalStorage<SwapToolState>(storageKey, createDefaultSwapToolState(rows), {
     legacyKeys,
@@ -152,7 +161,7 @@ export function useSwapTool({
 
   const onCopyRows = async () => {
     const copySource = animatedValues ?? state.values;
-    const lines = formatRowsForCopy(copySource, leftFallback, rightFallback, copyHeader);
+    const lines = formatRowsForCopy(copySource, leftFallback, rightFallback, copyHeader, copyRowLabels);
     const text = lines.join("\n");
 
     try {

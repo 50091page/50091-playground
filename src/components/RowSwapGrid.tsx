@@ -172,7 +172,10 @@ export function RowSwapGrid({
             const rightDup = isDuplicateName(normalizedCounts, right);
 
             return (
-              <div className={`shv0-row${locked ? " is-locked" : ""}${isBusy && !locked ? " is-shuffling" : ""}`} key={label}>
+              <div
+                className={`shv0-row${locked ? " is-locked" : ""}${isBusy && !locked ? " is-shuffling" : ""}`}
+                key={`${label}-${index}`}
+              >
                 <div className="shv0-role-wrap">
                   <span className="shv0-role">{label}</span>
                 </div>
