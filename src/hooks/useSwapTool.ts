@@ -72,7 +72,7 @@ export function formatRowsForCopy(
   const rowWidth = rowLabels ? Math.max(...rowLabels.map((label) => label.length)) : 0;
   const lines = leftNames.map((leftName, index) => {
     const baseLine = `${leftName.padEnd(leftWidth, " ")}\t${rightNames[index]}`;
-    return rowLabels ? `${rowLabels[index].padEnd(rowWidth, " ")}\t${baseLine}` : baseLine;
+    return rowLabels ? `[${rowLabels[index].padEnd(rowWidth, " ")}] ${baseLine}` : baseLine;
   });
 
   if (!copyHeader) {
@@ -81,7 +81,7 @@ export function formatRowsForCopy(
 
   const headerWidth = Math.max(leftWidth, copyHeader.left.length);
   const headerLine = `${copyHeader.left.padEnd(headerWidth, " ")}\t${copyHeader.right}`;
-  return rowLabels ? [`${"".padEnd(rowWidth, " ")}\t${headerLine}`, ...lines] : [headerLine, ...lines];
+  return rowLabels ? [`[${"".padEnd(rowWidth, " ")}] ${headerLine}`, ...lines] : [headerLine, ...lines];
 }
 
 export function useSwapTool({
