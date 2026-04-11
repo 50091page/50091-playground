@@ -51,12 +51,6 @@ export function OverwatchMapTool() {
   }, []);
 
   const toggleMode = (mode: OverwatchMapMode) => {
-    const isSelected = state.selectedModes.includes(mode);
-    if (isSelected && state.selectedModes.length === 1) {
-      showNotice("전장 형태는 최소 하나 이상 선택되어야 합니다.");
-      return;
-    }
-
     setState((prev) => ({
       ...prev,
       selectedModes: prev.selectedModes.includes(mode)
