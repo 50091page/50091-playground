@@ -12,7 +12,7 @@ The `힐링` home card opens `#/cosmic-clock`. Below the light distance, the lat
 
 ## Calculations and sources
 
-The celestial distance list shows only object names, numbers and units. Values are lighter than the primary light distance, align to the right without wrapping or ellipses, and units start at a shared position. In dark mode, the `이동 거리` heading uses a muted blue-gray with equal side rules. The countdown below the track separates its label and value with a clear gap and uses tabular numerals. Reference frames and calculation details are documented below rather than shown on the page.
+The celestial distance list shows only object names, numbers and units. Values are lighter than the primary light distance, align to the right without wrapping or ellipses, and units start at a shared position. In dark mode, the `이동 거리` heading uses a muted blue-gray with equal side rules. Reference frames and calculation details are documented below rather than shown on the page.
 
 Each accumulated path length is elapsed seconds times the representative speed in its own frame. They must not be added or interpreted as net displacement. These are not long-term physical predictions with invariant velocities. The CMB is a physical reference frame, not an absolute universal rest frame.
 
@@ -45,6 +45,8 @@ For the seven planets other than Earth, the app approximates the straight-line d
 `astronomy.ts` normalizes lengths to km and sorts numerically. The particle is placed at `(light distance - segment start) / (segment end - segment start)`, clamped to 0–1. Equal distances use an endpoint instead of dividing by zero. When light reaches the next milestone, the particle starts from the left of the new segment at the actual relative distance. Bands still use `start ≤ distance < end`, but their labels are not shown. Distance keeps growing beyond the final benchmark. Light reaches the ISS and GEO benchmarks in under one second, so updates may pass them between frames.
 
 Milestone types reuse SVG symbols. The 22–24px symbols mostly use approximately 1.5px strokes, with an 8px gap above the labels. Equal-width symbol and label groups fix the endpoints regardless of name length. Only the visible 1px line is inset to the artwork edges; the existing frame loop updates the particle's CSS `translate` along the full centre-to-centre distance at up to 60 Hz. The 6px white core and short four-point sparkle are always visible; only the approximately 34px violet halo shimmers on a 2.6-second cycle. Reduced motion disables the shimmer without changing the travel position.
+
+`다음 지점까지` is centred on the same row as the first line of both milestone names. The remaining time uses tabular numerals with a tight gap below the label. On narrow screens it sits below any wrapped names rather than overlapping them.
 
 ## Verification
 

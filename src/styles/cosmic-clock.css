@@ -78,7 +78,8 @@
 .cosmic-light-total .cosmic-unit { font-size: .24em; }
 
 .cosmic-light .cosmic-journey {
-  --cosmic-stop-half: min(21.5%, 4.5rem);
+  --cosmic-journey-width: min(100cqi, 29.5rem);
+  --cosmic-stop-half: min(calc(.215 * var(--cosmic-journey-width)), 4.5rem);
   --cosmic-journey-symbol-size: clamp(1.375rem, 4vw, 1.5rem);
   --cosmic-journey-row-gap: .5rem;
   display: grid;
@@ -86,7 +87,7 @@
   grid-template-columns: repeat(2, var(--cosmic-stop-half)) minmax(0, 1fr) repeat(2, var(--cosmic-stop-half));
   grid-template-rows: var(--cosmic-journey-symbol-size) auto;
   row-gap: var(--cosmic-journey-row-gap);
-  max-inline-size: 29.5rem;
+  inline-size: var(--cosmic-journey-width);
   margin: .625rem auto 0;
   color: var(--muted);
   font-size: clamp(.72rem, 2.05cqi, .91rem);
@@ -137,9 +138,15 @@
 
 .cosmic-journey-stop > span {
   grid-row: 2;
+  align-self: first baseline;
   max-inline-size: 100%;
   word-break: keep-all;
   overflow-wrap: anywhere;
+}
+
+.cosmic-journey:has(.cosmic-countdown) .cosmic-journey-stop > span {
+  /* Reserve the centered countdown label's width without moving either stop. */
+  max-inline-size: min(100%, max(0px, calc(var(--cosmic-journey-width) - 2 * var(--cosmic-stop-half) - 4.5rem)));
 }
 
 .cosmic-journey-particle {
@@ -197,23 +204,35 @@
 }
 
 .cosmic-light .cosmic-countdown {
-  margin-block-start: 1.16rem;
-  /* Take the extra height from the gap below rather than shifting the distance section. */
-  margin-block-end: -.35rem;
+  grid-column: 1 / -1;
+  grid-row: 2 / 4;
+  display: grid;
+  grid-template-rows: auto auto;
+  grid-template-rows: subgrid;
+  /* Compensate for the shorter countdown label's extra space in the shared row. */
+  row-gap: .25rem;
+  justify-items: center;
+  min-inline-size: 0;
+  line-height: normal;
 }
 
 .cosmic-countdown dt {
+  grid-row: 1;
+  align-self: first baseline;
   color: var(--muted);
   font-size: .72rem;
   font-weight: 550;
 }
 
 .cosmic-countdown dd {
-  margin-block-start: .5rem;
+  grid-row: 2;
+  margin-block-start: -.25rem;
   color: color-mix(in oklab, var(--ink) 73%, var(--muted));
   font-size: calc(clamp(.875rem, 2.2cqi, .98rem) + .09375rem);
   font-weight: 500;
   line-height: 1.4;
+  word-break: keep-all;
+  overflow-wrap: anywhere;
 }
 
 .cosmic-page .cosmic-motion {

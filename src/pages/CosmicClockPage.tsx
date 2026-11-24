@@ -144,13 +144,13 @@ export default function CosmicClockPage() {
             <MilestoneSymbol id={end.id} />
             <span><span className="sr-only">{next ? "다음 지점: " : "마지막 지점: "}</span>{end.name}</span>
           </div>
+          {next && (
+            <dl className="cosmic-countdown">
+              <dt>다음 지점까지</dt>
+              <dd>{remainingText(view.wait)}</dd>
+            </dl>
+          )}
         </div>
-        {next && (
-          <dl className="cosmic-countdown">
-            <dt>다음 지점까지</dt>
-            <dd>{remainingText(view.wait)}</dd>
-          </dl>
-        )}
       </section>
 
       <section className="cosmic-motion" aria-labelledby="cosmic-motion-heading">
