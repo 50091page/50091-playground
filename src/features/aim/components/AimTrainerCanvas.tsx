@@ -231,9 +231,9 @@ export function AimTrainerCanvas({
 
   const drawArena = useCallback(
     (graphics: PixiGraphics) => {
-      const fillColor = isDarkMode ? 0x101a2b : 0xe8f1fb;
+      const fillColor = isDarkMode ? 0x202a3c : 0xe8eef8;
       const fillAlpha = isDarkMode ? 0.92 : 0.94;
-      const gridColor = isDarkMode ? 0x37516f : 0xb2c7dd;
+      const gridColor = isDarkMode ? 0x394861 : 0xc4d2e8;
       const gridAlpha = isDarkMode ? 0.8 : 0.62;
 
       graphics.clear();

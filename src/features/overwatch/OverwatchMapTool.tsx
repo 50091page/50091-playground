@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState, type CSSProperties } from "react";
-import { MapPinned, RotateCcw, Shuffle } from "lucide-react";
+import { Check, MapPinned, RotateCcw, Shuffle } from "lucide-react";
 import { useLocalStorage } from "../../hooks/useLocalStorage";
 import { useToastNotice } from "../../hooks/useToastNotice";
 import {
@@ -32,6 +32,7 @@ export function OverwatchMapTool() {
     () => getCandidateOverwatchMaps(state.selectedModes, state.selectedMaps),
     [state.selectedMaps, state.selectedModes]
   );
+  const visibleModes = OVERWATCH_MAP_MODES.filter((mode) => state.selectedModes.includes(mode));
 
   useEffect(() => {
     if (!isDrawing) {
@@ -89,12 +90,14 @@ export function OverwatchMapTool() {
     }
 
     setIsDrawing(true);
-    let currentIndex = Math.floor(Math.random() * candidateMaps.length);
-    setDisplayMap(candidateMaps[currentIndex]);
-    drawIntervalRef.current = window.setInterval(() => {
-      currentIndex = (currentIndex + 1) % candidateMaps.length;
+    if (window.matchMedia("(prefers-reduced-motion: no-preference)").matches) {
+      let currentIndex = Math.floor(Math.random() * candidateMaps.length);
       setDisplayMap(candidateMaps[currentIndex]);
-    }, 35);
+      drawIntervalRef.current = window.setInterval(() => {
+        currentIndex = (currentIndex + 1) % candidateMaps.length;
+        setDisplayMap(candidateMaps[currentIndex]);
+      }, 35);
+    }
 
     const nextMap = pickRandomMap(candidateMaps);
     drawTimeoutRef.current = window.setTimeout(() => {
@@ -143,16 +146,16 @@ export function OverwatchMapTool() {
             <div className="owm0-chip-grid">
               {OVERWATCH_MAP_MODES.map((mode) => {
                 const isSelected = state.selectedModes.includes(mode);
-                const meta = OVERWATCH_MODE_META[mode];
 
                 return (
                   <button
                     type="button"
                     key={mode}
                     className={`owm0-chip${isSelected ? " is-selected" : ""}`}
-                    style={{ "--owm0-mode-accent": meta.accent } as CSSProperties}
                     onClick={() => toggleMode(mode)}
+                    aria-pressed={isSelected}
                   >
+                    <Check size={13} aria-hidden="true" />
                     <span className="owm0-chip-label">{mode}</span>
                   </button>
                 );
@@ -167,7 +170,8 @@ export function OverwatchMapTool() {
             </div>
 
             <div className="owm0-group-stack">
-              {state.selectedModes.map((mode) => (
+              {visibleModes.length === 0 && <p className="owm0-empty">모드를 선택하면 해당 전장이 표시됩니다.</p>}
+              {visibleModes.map((mode) => (
                 <section
                   className="owm0-map-group"
                   key={mode}
@@ -192,7 +196,9 @@ export function OverwatchMapTool() {
                           key={mapName}
                           className={`owm0-map-chip${isSelected ? " is-selected" : ""}`}
                           onClick={() => toggleMap(mapName)}
+                          aria-pressed={isSelected}
                         >
+                          <Check size={12} aria-hidden="true" />
                           {mapName}
                         </button>
                       );
@@ -208,8 +214,8 @@ export function OverwatchMapTool() {
               <span className="owm0-title">랜덤 결과</span>
               <span className="owm0-meta">{state.drawCount}회 뽑음</span>
             </div>
-            <div className={`owm0-result-card${displayMap ? " has-result" : ""}${isDrawing ? " is-drawing" : ""}`}>
-              <MapPinned size={16} />
+            <div className={`owm0-result-card${displayMap ? " has-result" : ""}${isDrawing ? " is-drawing" : ""}`} role="status" aria-busy={isDrawing}>
+              <MapPinned size={21} aria-hidden="true" />
               <strong>{displayMap ?? "맵을 뽑으면 여기 표시됩니다."}</strong>
             </div>
           </section>

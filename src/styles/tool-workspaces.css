@@ -1,0 +1,421 @@
+.shv0-game-tabs {
+  display: flex;
+  gap: clamp(.8rem, 3vw, 2rem);
+  margin-block-end: clamp(14px, 2vw, 22px);
+  overflow-x: auto;
+  border-block-end: 1px solid var(--line);
+}
+
+.shv0-game-tab {
+  position: relative;
+  flex: none;
+  min-block-size: 44px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--muted);
+  font-size: clamp(.82rem, .74rem + .28vw, .96rem);
+  font-weight: 750;
+  white-space: nowrap;
+}
+
+.shv0-game-tab:is(:hover, [aria-selected="true"]) { color: var(--ink); }
+.shv0-game-tab:focus-visible { outline-offset: -3px; }
+.shv0-game-tab[aria-selected="true"]::after {
+  content: "";
+  position: absolute;
+  inset-inline: 0;
+  inset-block-end: 0;
+  border-block-end: 2px solid var(--accent);
+}
+
+.shv0-single-game { inline-size: min(100%, 34rem); margin-inline: auto; }
+
+.shv0-overwatch-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--content-gap);
+  align-items: start;
+}
+
+.shv0-card, .aim-console {
+  min-width: 0;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--panel);
+  box-shadow: var(--shadow);
+}
+
+.shv0-card {
+  --game-ink: var(--accent);
+  --game-bg: var(--accent-soft);
+  --roll: var(--accent);
+  position: relative;
+  container-type: inline-size;
+}
+
+.shv0-card.is-lol { --game-ink: #255989; --game-bg: #e1ebf4; }
+.shv0-card.is-pubg { --game-ink: var(--warm); --game-bg: var(--warm-soft); }
+.shv0-card.is-overwatch { --game-ink: #404e58; --game-bg: #e7edf0; --roll: #62747d; }
+:root[data-theme="dark"] .shv0-card.is-lol { --game-ink: #b1d4f9; --game-bg: #243d53; }
+:root[data-theme="dark"] .shv0-card.is-overwatch { --game-ink: #dae7ed; --game-bg: #354349; --roll: #dceaf0; }
+
+.shv0-card-header, .shv0-footer, .aim-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px clamp(12px, 2vw, 21px);
+}
+.shv0-card-header, .aim-toolbar {
+  border-bottom: 1px solid var(--line);
+  border-radius: var(--radius) var(--radius) 0 0;
+  background: var(--well);
+}
+.shv0-card-header-left { display: flex; align-items: center; gap: 11px; min-width: 0; }
+.shv0-card-title { margin: 0; font-weight: 850; font-size: clamp(1rem, .89rem + .4vw, 1.24rem); letter-spacing: -.035em; }
+.shv0-card-icon {
+  display: grid;
+  place-items: center;
+  width: 39px;
+  height: 39px;
+  border-radius: 14px;
+  background: var(--game-bg);
+}
+.shv0-card-icon-img { width: 25px; height: 25px; object-fit: contain; }
+.shv0-card-icon-img-pubg { width: 29px; }
+.shv0-card-header-right { flex: 0 0 auto; }
+
+.shv0-clear-btn, .shv0-lock-toggle {
+  display: grid;
+  place-items: center;
+  width: 35px;
+  height: 35px;
+  border: 1px solid var(--line);
+  border-radius: var(--round-control);
+  color: var(--muted);
+  background: var(--panel);
+}
+.shv0-clear-btn:not(:disabled):hover, .shv0-lock-toggle:not(:disabled):hover {
+  border-color: var(--control-line);
+  background: var(--quiet);
+  color: var(--ink);
+}
+.shv0-card-content { padding: 12px clamp(10px, 1.6vw, 16px); }
+.shv0-row-list { display: grid; gap: 6px; }
+.shv0-row {
+  display: grid;
+  align-items: center;
+  grid-template-columns: 56px 35px minmax(0, 1fr) 1px minmax(0, 1fr);
+  gap: 7px;
+  padding: 6px;
+  border-radius: 14px;
+  background: var(--well);
+}
+.shv0-row.is-locked { background: var(--accent-soft); }
+.shv0-role {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  min-height: 30px;
+  padding: 3px 2px;
+  border-radius: 10px;
+  background: var(--game-bg);
+  color: var(--game-ink);
+  font-size: .75rem;
+  font-weight: 850;
+}
+.shv0-lock-toggle.is-locked { border-color: var(--accent); background: var(--accent-soft); color: var(--accent); }
+.shv0-row.is-locked .shv0-input { border-style: dashed; }
+.shv0-input-wrap { position: relative; min-width: 0; }
+.shv0-input {
+  width: 100%;
+  min-width: 0;
+  height: 40px;
+  padding: 0 10px;
+  border: 1px solid var(--control-line);
+  border-radius: var(--round-control);
+  background: var(--panel);
+  color: var(--ink);
+  font-size: .9rem;
+  font-weight: 650;
+}
+.shv0-input::placeholder { color: var(--muted); opacity: 1; }
+.shv0-input.is-left { box-shadow: inset 0 -2px 0 #3d80b4; }
+.shv0-input.is-right { box-shadow: inset 0 -2px 0 #b95046; }
+.shv0-input.is-left::placeholder { color: var(--game-ink); }
+.shv0-input.is-right::placeholder { color: var(--danger); }
+.shv0-input.is-duplicate { padding-inline-end: 27px; border-color: var(--danger); background: var(--danger-soft); }
+.shv0-divider { height: 21px; background: var(--line); }
+.shv0-dup-icon { position: absolute; top: 50%; right: 7px; translate: 0 -50%; color: var(--danger); pointer-events: none; }
+.shv0-warning { display: flex; align-items: center; gap: 7px; margin: 6px 0; color: var(--danger); font-size: .8rem; }
+.shv0-warning svg { flex: 0 0 auto; }
+
+.shv0-footer {
+  border-top: 1px solid var(--line);
+  border-radius: 0 0 var(--radius) var(--radius);
+  background: var(--well);
+  flex-wrap: wrap;
+}
+.shv0-actions { display: flex; flex-wrap: wrap; gap: 6px; }
+.shv0-shuffle-btn, .shv0-action-btn, .owm0-chip, .owm0-map-chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 38px;
+  padding: 6px 11px;
+  border: 1px solid var(--control-line);
+  border-radius: var(--round-control);
+  background: var(--panel);
+  color: var(--ink);
+  font-size: .8rem;
+  font-weight: 750;
+  line-height: 1.25;
+}
+.shv0-shuffle-btn { min-width: 94px; background: var(--honey); border-color: var(--honey-ink); color: var(--honey-ink); }
+.shv0-card.is-overwatch .shv0-shuffle-btn {
+  color: #f6fbfd;
+  background: #455a66;
+  border-color: #455a66;
+}
+:root[data-theme="dark"] .shv0-card.is-overwatch .shv0-shuffle-btn {
+  color: #1b292f;
+  background: #dce8ec;
+  border-color: #dce8ec;
+}
+.shv0-shuffle-btn:not(:disabled):hover { filter: brightness(.91); }
+.shv0-action-btn:not(:disabled):hover { background: var(--quiet); }
+.shv0-action-btn:disabled, .shv0-clear-btn:disabled, .shv0-lock-toggle:disabled { opacity: .64; }
+.shv0-shuffle-btn.is-busy { outline: 2px solid var(--roll); outline-offset: 2px; }
+.shv0-row.is-shuffling .shv0-input { background: var(--game-bg); }
+
+.owm0-card .shv0-card-content { display: grid; gap: 18px; padding: 16px clamp(12px, 2vw, 21px); }
+.owm0-block + .owm0-block { padding-top: 16px; border-top: 1px solid var(--line); }
+.owm0-head, .owm0-result-head { display: flex; align-items: baseline; justify-content: space-between; gap: 6px; margin-bottom: 8px; }
+.owm0-title { font-size: .94rem; font-weight: 850; color: var(--ink); }
+.owm0-meta, .owm0-group-count, .owm0-empty { color: var(--muted); font-size: .76rem; font-weight: 650; }
+.owm0-chip-grid, .owm0-map-grid { display: flex; flex-wrap: wrap; gap: 5px; }
+.owm0-chip, .owm0-map-chip { border-color: var(--control-line); min-height: 33px; color: var(--muted); padding-inline: 7px; }
+.owm0-chip {
+  border-color: color-mix(in oklab, var(--control-line) 90%, var(--panel));
+  border-radius: 999px;
+  padding-inline: 10px;
+}
+.owm0-map-chip { border-radius: 9px; }
+.owm0-chip svg, .owm0-map-chip svg { visibility: hidden; flex: 0 0 auto; stroke-width: 2.7; }
+.owm0-chip.is-selected, .owm0-map-chip.is-selected { color: var(--accent); border-color: var(--accent); background: var(--accent-soft); }
+.owm0-chip.is-selected { border-color: color-mix(in oklab, var(--accent) 84%, var(--accent-soft)); }
+.owm0-chip.is-selected svg, .owm0-map-chip.is-selected svg { visibility: visible; }
+.owm0-chip:not(.is-selected):hover, .owm0-map-chip:not(.is-selected):hover { background: var(--quiet); }
+.owm0-chip.is-selected:hover, .owm0-map-chip.is-selected:hover { background: color-mix(in oklab, var(--accent-soft) 88%, var(--accent)); }
+.owm0-group-stack { display: grid; gap: 6px; }
+.owm0-map-group {
+  display: grid;
+  grid-template-columns: 86px minmax(0, 1fr);
+  border: 1px solid var(--line);
+  border-color: color-mix(in oklab, var(--line) 66%, var(--well));
+  border-radius: 13px;
+  background: var(--well);
+}
+.owm0-group-head {
+  --owm0-group-fill: color-mix(in oklab, color-mix(in oklab, var(--quiet) 98%, black) 90%, var(--owm0-mode-accent));
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  row-gap: .21rem;
+  padding: 9px 8px;
+  color: var(--ink);
+  background: var(--owm0-group-fill);
+  border-radius: 12px 0 0 12px;
+}
+.owm0-group-title {
+  font-size: .78125rem;
+  font-weight: 850;
+  line-height: 1.12;
+  letter-spacing: -.02em;
+  white-space: nowrap;
+}
+.owm0-group-count {
+  color: color-mix(in oklab, var(--muted) 96%, var(--owm0-group-fill));
+  font: .625rem/1.1 var(--mono);
+}
+.owm0-map-grid { padding: 6px; }
+.owm0-map-chip {
+  border-color: color-mix(in oklab, var(--control-line) 88%, var(--panel));
+  font-size: .74rem;
+  font-weight: 700;
+}
+.owm0-map-chip.is-selected {
+  border-color: color-mix(in oklab, var(--accent) 61%, var(--accent-soft));
+}
+.owm0-empty { margin: 0; padding: 10px 0; }
+.owm0-result { padding: 12px; border: 1px solid var(--line); border-radius: 16px; background: var(--quiet); }
+.owm0-result-card {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  min-height: 54px;
+  padding: 8px 11px;
+  border: 1px solid var(--control-line);
+  border-radius: 11px;
+  background: var(--panel);
+  color: var(--muted);
+  font-size: .84rem;
+}
+.owm0-result-card > svg { flex: 0 0 auto; }
+.owm0-result-card.has-result { color: var(--game-ink); background: var(--game-bg); border-color: var(--roll); font-size: 1.17rem; }
+.owm0-result-card.is-drawing strong { font-variant-numeric: tabular-nums; }
+.toast-notice {
+  position: fixed;
+  z-index: 15;
+  bottom: 22px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: max-content;
+  max-width: calc(100% - 24px);
+  padding: 12px 16px;
+  color: var(--accent-ink);
+  background: var(--accent);
+  border-radius: 14px;
+  font-size: .84rem;
+  font-weight: 750;
+}
+
+.aim-toolbar { flex-wrap: wrap; }
+.aim-scoreboard { display: flex; flex: 1 1 auto; flex-wrap: wrap; gap: 7px clamp(10px, 2.25vw, 29px); margin: 0; }
+.aim-scoreboard div + div { border-left: 1px solid var(--line); padding-left: clamp(10px, 2.25vw, 29px); }
+.aim-scoreboard dt { color: var(--muted); font-size: .73rem; font-weight: 700; }
+.aim-scoreboard dd { margin: 1px 0 0; color: var(--ink); font: 800 1.5rem/1.1 var(--mono); }
+.aim-scoreboard dd small { font-size: .7rem; color: var(--muted); }
+.aim-arena { position: relative; min-height: 320px; overflow: hidden; margin: 10px; border-radius: 17px; background: var(--quiet); }
+.aim-arena-canvas canvas { display: block; max-width: 100%; }
+.aim-overlay {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  align-content: center;
+  justify-items: center;
+  gap: 12px;
+  padding: 15px;
+  background: radial-gradient(ellipse at center, color-mix(in oklab, var(--panel) 90%, transparent), transparent 85%);
+}
+.aim-overlay h2 { font-size: 1.58rem; font-weight: 850; color: var(--accent); }
+.aim-overlay-reticle { color: var(--accent); }
+.aim-mascot {
+  display: grid;
+  place-items: center;
+  width: clamp(112px, 17vw, 166px);
+  aspect-ratio: 1;
+  border-radius: 48% 52% 45% 55%;
+  background: radial-gradient(ellipse at 36% 28%, var(--accent-soft), var(--quiet) 88%);
+}
+.aim-mascot img { display: block; width: 100%; height: auto; aspect-ratio: 1; filter: drop-shadow(0 5px 5px #23283c29); }
+.aim-overlay-actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; }
+.aim-overlay .is-primary { padding-inline: 19px; }
+.aim-style-picker {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr));
+  gap: 12px;
+  padding: 12px clamp(12px, 2vw, 21px);
+  border-bottom: 1px solid var(--line);
+  background: var(--quiet);
+}
+.aim-style-picker fieldset { min-width: 0; }
+.aim-style-picker legend { margin-bottom: 6px; font-size: .81rem; font-weight: 800; }
+.aim-option-row { display: flex; flex-wrap: wrap; align-items: center; gap: 5px; }
+.aim-style-option, .aim-size-option {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  min-height: 36px;
+  padding: 3px 7px;
+  border: 1px solid var(--control-line);
+  border-radius: 10px;
+  background: var(--panel);
+  color: var(--ink);
+  font-size: .74rem;
+}
+.aim-style-option:hover, .aim-size-option:hover { background: var(--accent-soft); }
+.aim-style-option.is-selected, .aim-size-option.is-selected {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+  color: var(--accent);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.aim-style-option-swatch, .aim-size-option-preview { border-radius: 50%; width: 9px; height: 9px; background: var(--accent); }
+.aim-fade-slider-wrap { display: flex; align-items: center; min-height: 36px; gap: 8px; }
+.aim-fade-slider { flex: 1; min-width: 0; accent-color: var(--accent); }
+.aim-fade-slider-value { min-width: 6ch; font: .78rem var(--mono); color: var(--muted); }
+.aim-credits { margin: 5px 13px 10px; color: var(--muted); font-size: .75rem; }
+.aim-credits summary { width: fit-content; min-height: 27px; }
+.aim-credit-inline a { text-decoration: underline; }
+
+@container (max-width: 410px) {
+  .shv0-row { grid-template-columns: 45px 30px minmax(0, 1fr) 1px minmax(0, 1fr); gap: 5px; }
+  .shv0-lock-toggle { width: 30px; }
+  .shv0-role { font-size: .69rem; }
+  .shv0-input { padding-inline: 6px; }
+  .shv0-input.is-duplicate { padding-inline-end: 24px; }
+  .owm0-map-group { grid-template-columns: 1fr; }
+  .owm0-group-head { flex-direction: row; justify-content: space-between; align-items: center; border-radius: 12px 12px 0 0; }
+  .owm0-group-title { line-height: 1.23; }
+}
+
+@media (max-width: 840px) {
+  .shv0-overwatch-grid { grid-template-columns: minmax(0, 1fr); }
+}
+
+@media (min-width: 841px) and (min-height: 650px) {
+  .shv0-overwatch-grid > .shv0-card:first-child { position: sticky; top: 12px; }
+}
+
+/* Team shuffles are explicitly triggered by the player. */
+.shv0-row.is-shuffling:nth-child(even) { --rattle-delay: -55ms; }
+.shv0-row.is-shuffling .shv0-input-wrap {
+  --rattle-distance: 4px;
+  overflow: clip;
+  border-radius: var(--round-control);
+  animation: shuffle-rattle 124ms linear var(--rattle-delay, 0ms) infinite;
+}
+.shv0-row.is-shuffling .shv0-input-wrap:last-child {
+  --rattle-distance: -4px;
+  animation-delay: calc(var(--rattle-delay, 0ms) - 34ms);
+}
+.shv0-row.is-shuffling .shv0-input-wrap::after {
+  content: "";
+  position: absolute;
+  inset: 1px auto 1px 0;
+  width: 34%;
+  background: linear-gradient(105deg, transparent, color-mix(in oklab, var(--roll) 20%, transparent), transparent);
+  pointer-events: none;
+  animation: shuffle-streak 410ms linear 2;
+}
+.shv0-row.is-shuffling .shv0-input-wrap:last-child::after { animation-direction: reverse; }
+
+@keyframes shuffle-rattle {
+  24% { transform: translateX(var(--rattle-distance)); }
+  53% { transform: translateX(calc(-.65 * var(--rattle-distance))); }
+  78% { transform: translateX(calc(.35 * var(--rattle-distance))); }
+}
+@keyframes shuffle-streak {
+  from { transform: translateX(-100%); }
+  to { transform: translateX(295%); }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .owm0-result-card.is-drawing::after {
+    content: "";
+    position: absolute;
+    z-index: -1;
+    inset: 0;
+    background: linear-gradient(100deg, transparent 18%, color-mix(in oklab, var(--roll, var(--warm)) 22%, transparent) 48%, transparent 78%);
+    animation: tool-scan 840ms ease-in-out;
+  }
+  @keyframes tool-scan { from { transform: translateX(-100%); } to { transform: translateX(100%); } }
+}

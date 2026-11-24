@@ -1,5 +1,5 @@
+import { Crosshair, Pause, Play, Settings2 } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { BackToMenuButton } from "../components/BackToMenuButton";
 import { AimOptionsPanel } from "../features/aim/components/AimOptionsPanel";
 import { AimTopHud } from "../features/aim/components/AimTopHud";
 import { AimTrainerCanvas } from "../features/aim/components/AimTrainerCanvas";
@@ -16,7 +16,6 @@ import type {
 import { useAimStore } from "../features/aim/store/useAimStore";
 
 type AimTrainerPageProps = {
-  onNavigateMenu: () => void;
   theme: "light" | "dark";
 };
 
@@ -34,8 +33,9 @@ const TARGET_SIZE_OPTIONS: Array<{ value: TargetSizeMultiplier; label: string; p
   { value: 2, label: "2.0x", previewPx: 28 },
 ];
 
-export function AimTrainerPage({ onNavigateMenu, theme }: AimTrainerPageProps) {
+export function AimTrainerPage({ theme }: AimTrainerPageProps) {
   const arenaRef = useRef<HTMLDivElement | null>(null);
+  const settingsButtonRef = useRef<HTMLButtonElement>(null);
   const hitAudioRef = useRef<HTMLAudioElement | null>(null);
   const missAudioRef = useRef<HTMLAudioElement | null>(null);
   const [arenaSize, setArenaSize] = useState({ width: 920, height: 520 });
@@ -88,7 +88,7 @@ export function AimTrainerPage({ onNavigateMenu, theme }: AimTrainerPageProps) {
     }
 
     const measure = () => {
-      const nextWidth = Math.max(320, Math.floor(root.clientWidth));
+      const nextWidth = Math.max(1, Math.floor(root.clientWidth));
       const nextHeight = Math.max(320, Math.min(560, Math.floor(nextWidth * 0.56)));
       setArenaSize({ width: nextWidth, height: nextHeight });
     };
@@ -142,10 +142,57 @@ export function AimTrainerPage({ onNavigateMenu, theme }: AimTrainerPageProps) {
     return () => window.removeEventListener("keydown", onKeyDown);
   }, [gameState, pauseGame]);
 
+  const canConfigure = gameState === "idle" || gameState === "finished";
+
   return (
-    <section className="mx-auto max-w-[1120px] px-3 py-2">
-      <div className="menu-card menu-card-active menu-card-tone-aim">
-        <div ref={arenaRef} className="relative mt-3 w-full">
+    <main className="workspace tool-workspace">
+      <h1 className="sr-only">에임 훈련장</h1>
+
+      <section className="aim-console" aria-label="에임 훈련">
+        <header className="aim-toolbar">
+          <AimTopHud scoreText={scoreText} remainingText={remainingText} targetDuration={targetDuration} />
+          {gameState === "playing" && (
+            <button type="button" className="tool-button" onClick={pauseGame}>
+              <Pause size={15} aria-hidden="true" /> 일시정지
+            </button>
+          )}
+          {canConfigure && (
+            <button
+              type="button"
+              ref={settingsButtonRef}
+              className="tool-button"
+              onClick={() => setIsOptionOpen((prev) => !prev)}
+              aria-expanded={isOptionOpen}
+              aria-controls="aim-settings"
+            >
+              <Settings2 size={15} aria-hidden="true" /> 과녁 설정
+            </button>
+          )}
+        </header>
+
+        <div id="aim-settings" hidden={!canConfigure || !isOptionOpen}>
+          {canConfigure && isOptionOpen && (
+            <AimOptionsPanel
+              targetStyle={targetStyle}
+              targetDuration={targetDuration}
+              targetSizeMultiplier={targetSizeMultiplier}
+              targetStyleOptions={TARGET_STYLE_OPTIONS}
+              targetSizeOptions={TARGET_SIZE_OPTIONS}
+              minDuration={MIN_TARGET_DURATION_MS}
+              maxDuration={MAX_TARGET_DURATION_MS}
+              stepDuration={TARGET_DURATION_STEP_MS}
+              onSelectStyle={(style) => {
+                setTargetStyle(style);
+                setIsOptionOpen(false);
+                settingsButtonRef.current?.focus();
+              }}
+              onSelectSize={setTargetSizeMultiplier}
+              onSelectDuration={setTargetLifetimeMs}
+            />
+          )}
+        </div>
+
+        <div ref={arenaRef} className="aim-arena">
           <AimTrainerCanvas
             width={arenaSize.width}
             height={arenaSize.height}
@@ -159,98 +206,42 @@ export function AimTrainerPage({ onNavigateMenu, theme }: AimTrainerPageProps) {
             onMiss={registerMiss}
             onComplete={finishGame}
           />
-          <AimTopHud scoreText={scoreText} remainingText={remainingText} targetDuration={targetDuration} />
-          {gameState === "playing" ? (
-            <div className="absolute left-3 top-3">
-              <button
-                type="button"
-                className="pointer-events-auto aim-pause-button"
-                onClick={pauseGame}
-                aria-label="일시정지"
-              >
-                일시정지
+          {gameState === "paused" && (
+            <div className="aim-overlay">
+              <h2>일시정지</h2>
+              <div className="aim-overlay-actions">
+                <button type="button" className="tool-button is-primary" onClick={resumeGame}>계속하기</button>
+                <button type="button" className="tool-button" onClick={() => startGame()}>새 게임</button>
+                <button type="button" className="tool-button" onClick={resetGame}>훈련 메뉴</button>
+              </div>
+            </div>
+          )}
+          {canConfigure && (
+            <div className="aim-overlay">
+              {gameState === "idle" ? (
+                <div className="aim-mascot" aria-hidden="true">
+                  <img
+                    src={`${import.meta.env.BASE_URL}img/penguin2.png`}
+                    alt=""
+                    width={1600}
+                    height={1600}
+                    decoding="async"
+                  />
+                </div>
+              ) : (
+                <Crosshair size={52} strokeWidth={1.5} className="aim-overlay-reticle" aria-hidden="true" />
+              )}
+              <button type="button" className="tool-button is-primary" onClick={() => startGame()}>
+                <Play size={16} fill="currentColor" aria-hidden="true" />
+                {gameState === "finished" ? "다시 시작" : "훈련 시작"}
               </button>
             </div>
-          ) : null}
-          {gameState === "paused" ? (
-            <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
-              <div className="aim-arena-idle-overlay" />
-              <div className="pointer-events-auto aim-pause-panel relative z-10 flex flex-col items-center gap-2">
-                <button
-                  type="button"
-                  className="aim-arena-start-button is-pause-new min-w-[132px]"
-                  onClick={() => startGame()}
-                >
-                  NEW GAME
-                </button>
-                <button
-                  type="button"
-                  className="aim-arena-start-button is-pause-menu min-w-[132px]"
-                  onClick={resetGame}
-                >
-                  MENU
-                </button>
-                <button
-                  type="button"
-                  className="aim-arena-start-button is-pause-resume min-w-[132px]"
-                  onClick={resumeGame}
-                >
-                  RESUME
-                </button>
-              </div>
-            </div>
-          ) : null}
-          {gameState === "idle" || gameState === "finished" ? (
-            <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
-              <div className="aim-arena-idle-overlay" />
-              <div className="relative z-10 flex flex-col items-center gap-3">
-                <div className="flex items-center gap-2">
-                  <button
-                    type="button"
-                    className="pointer-events-auto aim-arena-start-button is-start"
-                    onClick={() => {
-                      setIsOptionOpen(false);
-                      startGame();
-                    }}
-                    aria-label="게임 시작"
-                  >
-                    {gameState === "finished" ? "RESTART" : "START"}
-                  </button>
-                  <button
-                    type="button"
-                    className="pointer-events-auto aim-arena-start-button is-option"
-                    onClick={() => setIsOptionOpen((prev) => !prev)}
-                    aria-expanded={isOptionOpen}
-                    aria-label="과녁 스타일 옵션 열기"
-                  >
-                    OPTION
-                  </button>
-                </div>
-                {isOptionOpen ? (
-                  <AimOptionsPanel
-                    targetStyle={targetStyle}
-                    targetDuration={targetDuration}
-                    targetSizeMultiplier={targetSizeMultiplier}
-                    targetStyleOptions={TARGET_STYLE_OPTIONS}
-                    targetSizeOptions={TARGET_SIZE_OPTIONS}
-                    minDuration={MIN_TARGET_DURATION_MS}
-                    maxDuration={MAX_TARGET_DURATION_MS}
-                    stepDuration={TARGET_DURATION_STEP_MS}
-                    onSelectStyle={(style) => {
-                      setTargetStyle(style);
-                      setIsOptionOpen(false);
-                    }}
-                    onSelectSize={setTargetSizeMultiplier}
-                    onSelectDuration={setTargetLifetimeMs}
-                  />
-                ) : null}
-              </div>
-            </div>
-          ) : null}
+          )}
         </div>
-        <div className="mt-3 flex flex-wrap items-center gap-3">
+
+        <details className="aim-credits">
+          <summary>사운드 출처</summary>
           <div className="aim-credit-inline">
-            <p className="aim-credit-label m-0">Audio credit</p>
             <p className="m-0">
               <span>Woodblock.wav by kwahmah_02 · </span>
               <a href="https://freesound.org/s/268822/" target="_blank" rel="noreferrer">
@@ -272,11 +263,8 @@ export function AimTrainerPage({ onNavigateMenu, theme }: AimTrainerPageProps) {
               </a>
             </p>
           </div>
-        </div>
-      </div>
-      <div className="mt-3 flex justify-start">
-        <BackToMenuButton onClick={onNavigateMenu} />
-      </div>
-    </section>
+        </details>
+      </section>
+    </main>
   );
 }

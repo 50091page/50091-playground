@@ -9,6 +9,8 @@ type StartShuffleAnimationOptions = {
   onFinish: (finalValues: RowPair[]) => void;
 };
 
+const PREVIEW_INTERVAL_MS = 40;
+
 export function useShuffleAnimation() {
   const [isShuffling, setIsShuffling] = useState(false);
   const [animatedValues, setAnimatedValues] = useState<RowPair[] | null>(null);
@@ -57,20 +59,20 @@ export function useShuffleAnimation() {
     setIsShuffling(true);
     setAnimatedValues(baseValues.map((pair) => ({ ...pair })));
 
+    let previewStep = 0;
     intervalRef.current = window.setInterval(() => {
+      const step = previewStep++;
       setAnimatedValues((prev) => {
         const source = prev ?? baseValues;
         return source.map((pair, index) => {
-          if (baseLocks[index]) {
+          // Brief, staggered holds keep every row from moving in unison.
+          if (baseLocks[index] || (step + index + 1) % 6 === 0) {
             return pair;
           }
-          if (Math.random() < 0.5) {
-            return { left: pair.right, right: pair.left };
-          }
-          return pair;
+          return { left: pair.right, right: pair.left };
         });
       });
-    }, 80);
+    }, PREVIEW_INTERVAL_MS);
 
     timeoutRef.current = window.setTimeout(() => {
       finishShuffleAnimation(finalValues, onFinish);

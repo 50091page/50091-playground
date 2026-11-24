@@ -1,124 +1,116 @@
-import { Suspense, lazy, useEffect } from "react";
-import { HashRouter, Navigate, Route, Routes, useLocation, useNavigate } from "react-router-dom";
+import { Suspense, lazy, useEffect, useLayoutEffect, useState } from "react";
+import { HashRouter, Link, NavLink, Navigate, Route, Routes, useLocation } from "react-router-dom";
+import { WorkspaceBackground } from "./components/WorkspaceBackground";
+import type { HeaderPreviewVariant } from "./dev/HeaderPreviewControls";
 import { useTheme } from "./hooks/useTheme";
-import { MenuPage } from "./pages/MenuPage";
-
-const DEV_ROUTE_LOADING_DELAY_MS = 650;
-
-async function withDevRouteDelay<T>(loader: () => Promise<T>) {
-  if (!import.meta.env.DEV) {
-    return loader();
-  }
-
-  const [module] = await Promise.all([
-    loader(),
-    new Promise<void>((resolve) => window.setTimeout(resolve, DEV_ROUTE_LOADING_DELAY_MS)),
-  ]);
-
-  return module;
-}
+import { LADDER_DISABLED, MenuPage, REACTION_PATH, WORKSPACE_TOOLS } from "./pages/MenuPage";
 
 const ShufflePage = lazy(() =>
-  withDevRouteDelay(() => import("./pages/ShufflePage")).then((module) => ({ default: module.ShufflePage }))
+  import("./pages/ShufflePage").then((module) => ({ default: module.ShufflePage }))
 );
 const AimTrainerPage = lazy(() =>
-  withDevRouteDelay(() => import("./pages/AimTrainerPage")).then((module) => ({ default: module.AimTrainerPage }))
+  import("./pages/AimTrainerPage").then((module) => ({ default: module.AimTrainerPage }))
 );
+const LadderPage = lazy(() =>
+  import("./pages/LadderPage").then((module) => ({ default: module.LadderPage }))
+);
+const ReactionTimePage = lazy(() =>
+  import("./pages/ReactionTimePage").then((module) => ({ default: module.ReactionTimePage }))
+);
+const HeaderPreviewControls = import.meta.env.DEV ? lazy(() => import("./dev/HeaderPreviewControls")) : null;
 const GA_MEASUREMENT_ID = "G-65CWGN0X87";
+
+function isReactionPath(pathname: string) {
+  return pathname.toLowerCase().replace(/\/+$/, "") === REACTION_PATH;
+}
 
 function RouteLoadingFallback() {
   return (
-    <div className="route-loading-shell" role="status" aria-live="polite" aria-label="화면 로딩 중">
-      <div className="route-loading-card">
-        <div className="route-loading-glow" />
-        <div className="route-loading-header" />
-        <div className="route-loading-line is-strong" />
-        <div className="route-loading-line" />
-        <div className="route-loading-line is-short" />
-        <div className="route-loading-dots" aria-hidden="true">
-          <span />
-          <span />
-          <span />
-        </div>
-      </div>
-    </div>
+    <main className="workspace workspace-loading" role="status">화면을 불러오는 중입니다.</main>
   );
 }
 
 function RoutePageViewTracker() {
   const location = useLocation();
+  const isReactionTest = isReactionPath(location.pathname);
+
+  useLayoutEffect(() => {
+    const analytics = window as Window & { "ga-disable-G-65CWGN0X87"?: boolean };
+    analytics[`ga-disable-${GA_MEASUREMENT_ID}`] = isReactionTest;
+  }, [isReactionTest]);
 
   useEffect(() => {
-    if (typeof window.gtag !== "function") {
+    if (isReactionTest || typeof window.gtag !== "function") {
       return;
     }
 
     const pagePath = `${location.pathname}${location.search}${location.hash}`;
     window.gtag("config", GA_MEASUREMENT_ID, { page_path: pagePath });
-  }, [location.hash, location.pathname, location.search]);
+  }, [isReactionTest, location.hash, location.pathname, location.search]);
 
   return null;
 }
 
 function AppFrame() {
   const { theme, toggleTheme } = useTheme();
-  const darkModeLogoSrc = `${import.meta.env.BASE_URL}img/50091.png`;
-  const lightModeLogoSrc = `${import.meta.env.BASE_URL}img/50091-dark.png`;
   const location = useLocation();
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    [darkModeLogoSrc, lightModeLogoSrc].forEach((src) => {
-      const image = new Image();
-      image.src = src;
-    });
-  }, [darkModeLogoSrc, lightModeLogoSrc]);
+  const isHome = location.pathname === "/";
+  const [headerVariant, setHeaderVariant] = useState<HeaderPreviewVariant>("original");
 
   return (
     <>
-      <div className="mx-auto mb-2 max-w-[1120px] app-top-controls px-3 pb-2 pt-4">
-        <div className="theme-floating-controls">
+      <WorkspaceBackground />
+      <header
+        className={`workspace-header${isHome ? " is-home" : ""}`}
+        data-header-preview={HeaderPreviewControls && isHome && headerVariant !== "original" ? headerVariant : undefined}
+      >
+        <div className="workspace workspace-header-inner">
+          <Link to="/" className="workspace-brand" aria-label="50091 홈">
+            <span className="workspace-brand-mark" aria-hidden="true"><i /></span>
+            50091
+          </Link>
+          <nav className={`workspace-nav${isHome ? " is-hidden" : ""}`} aria-label="도구 메뉴">
+            {WORKSPACE_TOOLS.filter(({ pinToHeader }) => pinToHeader).map(({ path, title, disabled }) => (
+              disabled
+                ? <span key={path} role="link" aria-disabled="true">{title}</span>
+                : <NavLink key={path} to={path}>{title}</NavLink>
+            ))}
+          </nav>
           <button
             type="button"
-            className="theme-image-toggle"
+            className="workspace-theme"
             onClick={toggleTheme}
             aria-label={theme === "dark" ? "라이트모드로 전환" : "다크모드로 전환"}
+            title={theme === "dark" ? "라이트모드로 전환" : "다크모드로 전환"}
           >
-            <span className="theme-image-stack" aria-hidden="true">
-              <img
-                className={`theme-image-toggle-img ${theme === "dark" ? "is-visible" : ""}`}
-                src={darkModeLogoSrc}
-                alt=""
-                loading="eager"
-                decoding="sync"
-              />
-              <img
-                className={`theme-image-toggle-img ${theme === "light" ? "is-visible" : ""}`}
-                src={lightModeLogoSrc}
-                alt=""
-                loading="eager"
-                decoding="sync"
-              />
-            </span>
+            <img src={`${import.meta.env.BASE_URL}img/50091.png`} alt="" hidden={theme !== "dark"} />
+            <img src={`${import.meta.env.BASE_URL}img/50091-dark.png`} alt="" hidden={theme !== "light"} />
           </button>
-          <span className="theme-mode-hint" aria-live="polite">
-            {theme === "dark" ? "라이트모드" : "다크모드"}
-          </span>
         </div>
-      </div>
-      <div key={location.pathname} className="page-transition-layer page-transition-enter">
+      </header>
+      <div
+        key={location.pathname}
+        className={`workspace-route${isHome ? " is-home" : ""}${isReactionPath(location.pathname) ? " is-reaction-test" : ""}`}
+      >
         <Suspense fallback={<RouteLoadingFallback />}>
           <Routes>
             <Route path="/" element={<MenuPage />} />
-            <Route path="/shuffle" element={<ShufflePage onNavigateMenu={() => navigate("/")} />} />
-            <Route
-              path="/aim-trainer"
-              element={<AimTrainerPage onNavigateMenu={() => navigate("/")} theme={theme} />}
-            />
+            <Route path="/shuffle" element={<ShufflePage />} />
+            <Route path="/aim-trainer" element={<AimTrainerPage theme={theme} />} />
+            <Route path={REACTION_PATH} element={<ReactionTimePage />} />
+            <Route path="/ladder" element={LADDER_DISABLED ? <Navigate to="/" replace /> : <LadderPage />} />
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </Suspense>
       </div>
+      <footer className="workspace-footer">
+        <div className="workspace workspace-footer-inner"><small>Made by 저둥저둥</small></div>
+      </footer>
+      {HeaderPreviewControls && isHome && (
+        <Suspense fallback={null}>
+          <HeaderPreviewControls value={headerVariant} onChange={setHeaderVariant} />
+        </Suspense>
+      )}
     </>
   );
 }

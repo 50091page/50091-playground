@@ -1,8 +1,23 @@
 # 50091
 
+팀 섞기(리그 오브 레전드, 배틀그라운드, 오버워치), 오버워치 맵 추첨, 에임 훈련장, 반응속도 테스트를 제공하는 게임 도구 모음입니다. 사다리타기는 현재 비활성 상태입니다.
+
+## 명세서
+
+| 문서 | 한국어 | English |
+| --- | --- | --- |
+| 프로젝트 개요 | [공통 헤더, 메인 메뉴, 라우팅](spec/00_project_overview_ko.md) | [Project overview](spec/00_project_overview.md) |
+| 팀 섞기 | [게임별 탭, 팀 편성, 오버워치 맵 추첨](spec/01_shuffle_tool_spec_ko.md) | [Team shuffle](spec/01_shuffle_tool_spec.md) |
+| 에임 훈련장 | [훈련 화면, 과녁 옵션, 판정](spec/02_aim_trainer_spec_ko.md) | [Aim trainer](spec/02_aim_trainer_spec.md) |
+| 반응속도 테스트 | [측정 방식, 기록, 한계](spec/03_reaction_time_spec_ko.md) | [Reaction time test](spec/03_reaction_time_spec.md) |
+
+## 로컬 실행
+
+`npm ci`로 의존성을 설치한 뒤 `npm run dev`로 실행합니다. `npm run build`는 배포용 빌드, `npm run preview`는 빌드 미리보기, `npm test`는 자동 테스트를 실행합니다.
+
 ## Team Shuffle Fairness
 
-팀 섞기 로직은 각 행(row)마다 `50%` 확률로 좌/우를 스왑합니다.
+현재 팀 섞기 설정에서는 잠기지 않고 양쪽 이름이 모두 입력된 각 행을 독립적으로 `50%` 확률로 좌우 스왑합니다.
 랜덤 시드 3개로 각각 `100,000회` 시뮬레이션하여 분포가 반반에 수렴하는지 검증했습니다.
 
 | Scenario | Swapped | Stayed | Swap Ratio |

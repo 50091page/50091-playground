@@ -25,6 +25,7 @@ type NameInputProps = {
   inputRef?: (node: HTMLInputElement | null) => void;
   value: string;
   rowLabel: string;
+  teamLabel: string;
   placeholder: string;
   tone: "left" | "right" | "neutral";
   isBusy: boolean;
@@ -38,6 +39,7 @@ function NameInput({
   inputRef,
   value,
   rowLabel,
+  teamLabel,
   placeholder,
   tone,
   isBusy,
@@ -56,7 +58,7 @@ function NameInput({
       className={`shv0-input${stateClass}`}
       value={value}
       placeholder={placeholder}
-      aria-label={`${rowLabel} ${placeholder || "팀"} 이름`}
+      aria-label={`${rowLabel} ${teamLabel} 이름`}
       disabled={isBusy}
       aria-invalid={isDuplicate ? true : undefined}
       onChange={(event) => onChange(event.target.value)}
@@ -185,10 +187,8 @@ export function RowSwapGrid({
                   className={`shv0-lock-toggle${locked ? " is-locked" : ""}`}
                   onClick={() => onLockChange(index, !locked)}
                   aria-pressed={locked}
-                  aria-label={locked ? "Unlock row" : "Lock row"}
+                  aria-label={`${label} 줄 고정`}
                   title={locked ? "클릭하면 고정 해제됩니다." : "클릭하면 이 줄이 고정됩니다."}
-                  data-tip={locked ? "클릭하면 고정 해제됩니다." : "클릭하면 이 줄이 고정됩니다."}
-                  tabIndex={-1}
                   disabled={isBusy}
                 >
                   {locked ? <Lock size={14} /> : <Unlock size={14} />}
@@ -201,6 +201,7 @@ export function RowSwapGrid({
                     }}
                     value={left}
                     rowLabel={label}
+                    teamLabel={isLol ? "블루팀" : "왼쪽"}
                     placeholder={leftPlaceholder || "Player name..."}
                     tone={inputTone ?? "left"}
                     isBusy={isBusy}
@@ -226,6 +227,7 @@ export function RowSwapGrid({
                     }}
                     value={right}
                     rowLabel={label}
+                    teamLabel={isLol ? "레드팀" : "오른쪽"}
                     placeholder={rightPlaceholder || "Player name..."}
                     tone={inputTone ?? "right"}
                     isBusy={isBusy}
