@@ -183,5 +183,6 @@
 
 - 정적 프런트엔드
 - `.github/workflows/deploy.yml`은 `main` 푸시 또는 수동 실행 시 `dist`를 GitHub Pages에 배포하도록 설정되어 있다.
+- 로컬 관찰소 파일이 있어도 Vite 빌드는 개발용 진입 모듈을 자산 처리 전에 제외한다.
 - 커스텀 도메인 설정: `public/CNAME`의 `50091.xyz`.
 - `HashRouter`를 사용하므로 정적 호스팅 환경에서도 라우팅이 안정적이다

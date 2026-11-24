@@ -183,5 +183,6 @@ Game tab layout, keyboard navigation, and retention of names, locks, and map res
 
 - Static frontend only
 - `.github/workflows/deploy.yml` builds and deploys `dist` to GitHub Pages on pushes to `main` or manual runs.
+- Even when the local Observatory files are present, Vite builds exclude the development entry before processing its assets.
 - `public/CNAME` configures `50091.xyz` as the custom domain.
 - `HashRouter` keeps routing compatible with static hosting

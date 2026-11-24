@@ -1,6 +1,6 @@
 # Cosmic Clock
 
-The `힐링` home card opens `#/cosmic-clock`. Below elapsed time and light distance, the path shows only registered benchmarks. Its violet centre is the most recently passed benchmark, flanked by the preceding and next entries in the list. Missing neighbours are omitted. The countdown shows seconds until the next unpassed benchmark and is omitted beyond the last one. The four distances are stacked below a centred `이동 거리` heading with a faint line of equal length on either side. A reset button below the counters requires confirmation. There are no graphics or objectives. The Observatory card is in the same category but still opens in a separate tab only in development and is excluded from production.
+The `힐링` home card opens `#/cosmic-clock`. Below the light distance, the latest passed and next milestones each show a centred SVG symbol above the name. The thin line joins the outlines of the two symbols, while the luminous particle travels between their centres. The countdown uses the next milestone on the right. At the final milestone the particle stays at the centre of the last symbol and the countdown is hidden. The four distances appear below the centred `이동 거리` heading. The reset button requires confirmation. The Observatory is a local development prototype and is not deployed.
 
 ## Persistence and updates
 
@@ -12,7 +12,7 @@ The `힐링` home card opens `#/cosmic-clock`. Below elapsed time and light dist
 
 ## Calculations and sources
 
-The celestial distance list shows only object names, numbers and units. Values are lighter than the primary light distance, align to the right without wrapping or ellipses, and units start at a shared position. In dark mode, the `이동 거리` heading uses a brighter blue-gray without changing its side rules. The chevrons remain lower contrast than the milestone names and scale visually without changing their spacing. The countdown below the path separates its label and value with a clear gap and uses tabular numerals. Reference frames and calculation details are documented below rather than shown on the page.
+The celestial distance list shows only object names, numbers and units. Values are lighter than the primary light distance, align to the right without wrapping or ellipses, and units start at a shared position. In dark mode, the `이동 거리` heading uses a muted blue-gray with equal side rules. The countdown below the track separates its label and value with a clear gap and uses tabular numerals. Reference frames and calculation details are documented below rather than shown on the page.
 
 Each accumulated path length is elapsed seconds times the representative speed in its own frame. They must not be added or interpreted as net displacement. These are not long-term physical predictions with invariant velocities. The CMB is a physical reference frame, not an absolute universal rest frame.
 
@@ -42,7 +42,9 @@ For the seven planets other than Earth, the app approximates the straight-line d
 | Nebula and Galactic centre | Solar vicinity: Orion Nebula ~1,350 ly; Galactic centre 26,000 ly | [Menten et al. (2007), 414 ± 7 pc parallax](https://arxiv.org/abs/0709.0485) and [NASA Galactic centre](https://science.nasa.gov/asset/hubble/compass-and-scale-file-for-galactic-center/). |
 | Other galaxies | Solar vicinity: LMC 163,000, SMC 200,000, Andromeda 2.5 million, Triangulum 2.74 million ly | [NASA Magellanic Clouds](https://www.nasa.gov/universe/nasas-swift-produces-best-ultraviolet-maps-of-the-nearest-galaxies/), [NASA M31](https://science.nasa.gov/mission/hubble/science/explore-the-night-sky/hubble-messier-catalog/messier-31/) and [Breuval et al. (2023), M33 840 ± 11 kpc](https://arxiv.org/abs/2304.00037). |
 
-`astronomy.ts` normalizes lengths to km and sorts numerically. The middle benchmark is the greatest distance at or below the total; the left and right positions are its immediate neighbours in that order. Bands still use `start ≤ distance < end`, but the path does not show band labels. Distance keeps growing beyond the last defined benchmark. Light reaches the ISS and GEO benchmarks in under one second, so updates may pass them between frames.
+`astronomy.ts` normalizes lengths to km and sorts numerically. The particle is placed at `(light distance - segment start) / (segment end - segment start)`, clamped to 0–1. Equal distances use an endpoint instead of dividing by zero. When light reaches the next milestone, the particle starts from the left of the new segment at the actual relative distance. Bands still use `start ≤ distance < end`, but their labels are not shown. Distance keeps growing beyond the final benchmark. Light reaches the ISS and GEO benchmarks in under one second, so updates may pass them between frames.
+
+Milestone types reuse SVG symbols. The 22–24px symbols mostly use approximately 1.5px strokes, with an 8px gap above the labels. Equal-width symbol and label groups fix the endpoints regardless of name length. Only the visible 1px line is inset to the artwork edges; the existing frame loop updates the particle's CSS `translate` along the full centre-to-centre distance at up to 60 Hz. The 6px white core and short four-point sparkle are always visible; only the approximately 34px violet halo shimmers on a 2.6-second cycle. Reduced motion disables the shimmer without changing the travel position.
 
 ## Verification
 
@@ -55,3 +57,7 @@ Chrome, Firefox and WebKit verified safe default cancellation, Escape dismissal,
 The redesign was compared at the same 30-day point and 1440px/390px widths. Chromium, Firefox and WebKit at 320px also verified timestamp preservation, alignment during live updates, long benchmark names, and large values beyond the final benchmark.
 
 The horizontal path and stacked list were checked at one day, 30 days, one year, ten years and 100 years. At 320px the celestial numbers remained on one line and units shared an alignment point. A live crossing into the Oort Cloud updated the countdown and path without a reload.
+
+Chrome, Firefox and WebKit verified midpoint placement, milestone and countdown transitions, the final endpoint, reset, and reduced motion. Chrome measured roughly 60 particle updates per second, with no layout passes in an isolated particle-effect check.
+
+Chrome verified line contacts for all 14 symbol types and the rendered layout at 1440px and 390px. Substituting every milestone name at 280px and 320px left symbol centres and track position unchanged, without horizontal overflow.

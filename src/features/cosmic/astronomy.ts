@@ -139,3 +139,12 @@ export function journeyAt(km: number, milestones = MILESTONES) {
   const region = REGIONS.find(({ startKm, endKm }) => km >= startKm && km < endKm) ?? REGIONS[REGIONS.length - 1];
   return { earlier, previous, next, region };
 }
+
+export function journeySegment({ earlier, previous, next }: ReturnType<typeof journeyAt>) {
+  return next ? { start: previous, end: next } : { start: earlier ?? previous, end: previous };
+}
+
+export function journeyProgress(km: number, startKm: number, endKm: number) {
+  if (endKm <= startKm) return km >= endKm ? 1 : 0;
+  return Math.min(1, Math.max(0, (km - startKm) / (endKm - startKm)));
+}

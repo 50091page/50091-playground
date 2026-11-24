@@ -1,4 +1,4 @@
-import { AU_KM, DAY_SECONDS, JULIAN_YEAR_SECONDS, LIGHT_KM_S, LIGHT_YEAR_KM, MILESTONES, MOTIONS, REGIONS, journeyAt, milestonesAtDeparture } from "../src/features/cosmic/astronomy.js";
+import { AU_KM, DAY_SECONDS, JULIAN_YEAR_SECONDS, LIGHT_KM_S, LIGHT_YEAR_KM, MILESTONES, MOTIONS, REGIONS, journeyAt, journeyProgress, journeySegment, milestonesAtDeparture } from "../src/features/cosmic/astronomy.js";
 import { DEPARTURE_KEY, durationParts, formatDistance, persistResetDeparture, remainingText, selectDeparture, startCosmicUpdates } from "../src/features/cosmic/clock.js";
 
 function equal<T>(actual: T, expected: T, message: string) {
@@ -30,6 +30,15 @@ export function runCosmicClockTests() {
 
   equal(journeyAt(0).previous.id, "launch", "new journey starts from Earth");
   equal(journeyAt(0).earlier, null, "no earlier point at departure");
+  const firstSegment = journeySegment(journeyAt(0));
+  equal([firstSegment.start.id, firstSegment.end.id], ["launch", "iss"], "track starts with the first two milestones");
+  equal(journeyProgress(0, firstSegment.start.km, firstSegment.end.km), 0, "light starts at the left endpoint");
+  equal([journeyProgress(-1, 0, 10), journeyProgress(2.5, 0, 10), journeyProgress(12, 0, 10)],
+    [0, 0.25, 1], "track follows the exact distance ratio and clamps to its ends");
+  equal([journeyProgress(9, 10, 10), journeyProgress(10, 10, 10)], [0, 1], "coincident endpoints do not divide by zero");
+  const finalSegment = journeySegment(journeyAt(1e28));
+  equal([finalSegment.start.id, finalSegment.end.id], ["andromeda", "triangulum"], "final track preserves the final two milestones");
+  equal(journeyProgress(1e28, finalSegment.start.km, finalSegment.end.km), 1, "light stays at the final endpoint");
   for (let index = 1; index < MILESTONES.length; index++) {
     const point = MILESTONES[index], before = MILESTONES[index - 1], epsilon = point.km * 1e-12;
     equal(journeyAt(point.km - epsilon).previous.id, before.id, `before ${point.id}`);
@@ -38,6 +47,9 @@ export function runCosmicClockTests() {
     equal(journeyAt(point.km).earlier?.id, before.id, `earlier milestone at ${point.id}`);
     equal(journeyAt(point.km + epsilon).previous.id, point.id, `after ${point.id}`);
     equal(journeyAt(point.km).next?.id ?? null, MILESTONES[index + 1]?.id ?? null, `next after ${point.id}`);
+    const segment = journeySegment(journeyAt(point.km));
+    equal(journeyProgress(point.km, segment.start.km, segment.end.km),
+      index === MILESTONES.length - 1 ? 1 : 0, `light re-anchors at ${point.id}`);
   }
   for (const [index, range] of REGIONS.entries()) {
     equal(journeyAt(range.startKm).region, range, "region entry is inclusive");
@@ -49,9 +61,8 @@ export function runCosmicClockTests() {
     .map(s => journeyAt(s * LIGHT_KM_S).previous.id),
     ["heliopause", "oortIn", "oortInterior", "sirius", "orion", "triangulum"], "long elapsed time selects the matching milestone");
   equal(journeyAt(1e28).next, null, "final milestone does not end the journey");
-  const monthJourney = journeyAt(30 * DAY_SECONDS * LIGHT_KM_S);
-  equal([monthJourney.earlier?.id, monthJourney.previous.id, monthJourney.next?.id],
-    ["heliopause", "oortIn", "oortInterior"], "all three path labels use registered distance points");
+  const monthSegment = journeySegment(journeyAt(30 * DAY_SECONDS * LIGHT_KM_S));
+  equal([monthSegment.start.id, monthSegment.end.id], ["oortIn", "oortInterior"], "track labels use registered distance points");
 
   const planets = [["mercury", "수성"], ["venus", "금성"], ["mars", "화성"], ["jupiter", "목성"],
     ["saturn", "토성"], ["uranus", "천왕성"], ["neptune", "해왕성"]] as const;

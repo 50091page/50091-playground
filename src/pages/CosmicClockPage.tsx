@@ -1,7 +1,8 @@
-import { ChevronRight, RotateCcw } from "lucide-react";
+import { RotateCcw } from "lucide-react";
 import { useLayoutEffect, useRef, useState, type FormEvent } from "react";
-import { journeyAt, LIGHT_KM_S, milestonesAtDeparture, MOTIONS } from "../features/cosmic/astronomy";
+import { journeyAt, journeyProgress, journeySegment, LIGHT_KM_S, milestonesAtDeparture, MOTIONS } from "../features/cosmic/astronomy";
 import { durationParts, formatDistance, persistResetDeparture, remainingText, selectDeparture, startCosmicUpdates } from "../features/cosmic/clock";
+import { MilestoneSymbol, milestoneLineStyle } from "../features/cosmic/MilestoneSymbol";
 import { safeLocalStorageGet, safeLocalStorageSet } from "../utils/storage";
 import "../styles/cosmic-clock.css";
 
@@ -30,6 +31,7 @@ function Duration({ seconds }: { seconds: number }) {
 
 export default function CosmicClockPage() {
   const page = useRef<HTMLElement>(null);
+  const particle = useRef<HTMLSpanElement>(null);
   const resetDialog = useRef<HTMLDialogElement>(null);
   const [view, setView] = useState(() => ({ seconds: 0, journey: journeyAt(0), wait: 0 }));
   const [temporary, setTemporary] = useState(false);
@@ -52,8 +54,10 @@ export default function CosmicClockPage() {
         unit: element.querySelector(".cosmic-unit")!,
       };
     });
+    const particleStyle = particle.current!.style;
     const milestones = milestonesAtDeparture(departure.at);
     let journey = journeyAt(0, milestones), lastSecond = -1, lastWait = -1;
+    let segment = journeySegment(journey), lastProgress = -1;
     let showDeparture = confirmedDeparture !== null;
     const stop = startCosmicUpdates(departure.at, {
       wallNow: Date.now,
@@ -81,7 +85,15 @@ export default function CosmicClockPage() {
 
       const km = elapsed * LIGHT_KM_S;
       const crossed = !!journey.next && km >= journey.next.km;
-      if (crossed) journey = journeyAt(km, milestones);
+      if (crossed) {
+        journey = journeyAt(km, milestones);
+        segment = journeySegment(journey);
+      }
+      const progress = journeyProgress(km, segment.start.km, segment.end.km);
+      if (progress !== lastProgress) {
+        lastProgress = progress;
+        particleStyle.translate = `${progress * 100}cqi`;
+      }
       const seconds = Math.floor(elapsed);
       const wait = journey.next ? Math.max(0, (journey.next.km - km) / LIGHT_KM_S) : 0;
       const waitSecond = Math.floor(wait);
@@ -105,7 +117,8 @@ export default function CosmicClockPage() {
     setConfirmedDeparture(departure);
   }
 
-  const { earlier, previous: current, next } = view.journey;
+  const { start, end } = journeySegment(view.journey);
+  const { next } = view.journey;
   return (
     <main className="workspace cosmic-page" ref={page}>
       <h1 className="sr-only">우주의 시계</h1>
@@ -117,21 +130,21 @@ export default function CosmicClockPage() {
       <section className="cosmic-light" aria-labelledby="cosmic-light-heading">
         <h2 id="cosmic-light-heading">지구에서 출발한 빛</h2>
         <p className="cosmic-light-total"><Distance id="light" /></p>
-        <p className="cosmic-journey" data-ended={next ? undefined : ""}>
-          {earlier && (
-            <>
-              <span className="cosmic-journey-previous"><span className="sr-only">지난 지점: </span>{earlier.name}</span>
-              <ChevronRight className="cosmic-journey-leading" aria-hidden="true" size={12} strokeWidth={1.5} />
-            </>
-          )}
-          <span className="cosmic-journey-current" aria-current="step">{current.name}</span>
-          {next && (
-            <>
-              <ChevronRight className="cosmic-journey-trailing" aria-hidden="true" size={12} strokeWidth={1.5} />
-              <span className="cosmic-journey-next"><span className="sr-only">다음 지점: </span>{next.name}</span>
-            </>
-          )}
-        </p>
+        <div className="cosmic-journey">
+          <div className="cosmic-journey-track" style={milestoneLineStyle(start.id, end.id)} aria-hidden="true">
+            <span className="cosmic-journey-particle" ref={particle}>
+              <span className="cosmic-journey-spark" />
+            </span>
+          </div>
+          <div className="cosmic-journey-stop cosmic-journey-start">
+            <MilestoneSymbol id={start.id} />
+            <span><span className="sr-only">지난 지점: </span>{start.name}</span>
+          </div>
+          <div className="cosmic-journey-stop cosmic-journey-end">
+            <MilestoneSymbol id={end.id} />
+            <span><span className="sr-only">{next ? "다음 지점: " : "마지막 지점: "}</span>{end.name}</span>
+          </div>
+        </div>
         {next && (
           <dl className="cosmic-countdown">
             <dt>다음 지점까지</dt>
