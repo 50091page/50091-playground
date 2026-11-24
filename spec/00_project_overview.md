@@ -7,8 +7,11 @@
 1. **Team shuffle** for League of Legends, PUBG, and Overwatch, plus an Overwatch map draw
 2. **Aim trainer**, a reaction minigame rendered with PixiJS
 3. **Reaction time test**, a five-attempt test of responses to a color cue
+4. **Cosmic clock**, a text-only observation of elapsed time, cumulative motion and the distance light could have travelled
 
-The ladder lottery is visible but disabled. The app has no backend, authentication, or server-side persistence. Team and map settings, explicit theme preferences, and reaction personal bests use browser `localStorage`. Practice and test sessions live in memory.
+The Penguin Observatory is an unreleased prototype available only on development servers with the local source and images. Those files are excluded from the public repository and production site.
+
+The ladder lottery is visible but disabled. The app has no backend, authentication, or server-side persistence. Team and map settings, explicit theme preferences, reaction personal bests and the cosmic departure timestamp use browser `localStorage`. Practice and test sessions live in memory.
 
 ## Tech Stack
 
@@ -46,6 +49,8 @@ File: `src/App.tsx`
 | `#/shuffle` | Team shuffle, with three in-page game tabs and no game-specific URL |
 | `#/aim-trainer` | Aim trainer |
 | `#/reaction-test` | Reaction time test |
+| `#/cosmic-clock` | [Cosmic clock](05_cosmic_clock_spec.md); part of the home page's `힐링` category |
+| `#/observatory` | The `힐링` card and route are enabled only in development when the local prototype exists. Otherwise the URL redirects home. |
 | `#/ladder` | Disabled; direct visits redirect home |
 | Any other path | Redirects home |
 
@@ -75,6 +80,7 @@ File: `src/pages/MenuPage.tsx`
 
 - The wide layout has a Team Shuffle card with no section heading on the left, and Aim Trainer, Reaction Time Test, and Ladder Lottery under `연습·미니게임` on the right. On narrow screens, Team Shuffle appears above the minigames.
 - Cards have a base height of `136px` and a `22px` corner radius. Team Shuffle alone shows a penguin and the subtitle `팀 편성 · 맵 추첨`, which is `13px` by default and sits `5px` below the title. The other cards show only a title and an icon.
+- The `힐링` section follows the existing feature area and aligns with `연습·미니게임` on wide screens. These cards do not enter the shared header navigation. Cosmic Clock shows an orbit icon; the dev-only Observatory card shows the existing mascot.
 - Enabled cards are links that activate with `Enter`. While `LADDER_DISABLED` is true, the ladder card and global menu entry are dimmed, expose `aria-disabled="true"`, and have no destination. The shared list places enabled items before disabled ones and preserves order within each group.
 
 ### Shuffle
@@ -153,6 +159,7 @@ Covered areas:
 - duplicate-name normalization logic
 - Overwatch map candidate filtering and state migration
 - reaction test timestamp compatibility, false starts, duplicate input, interruptions, statistics, and cleanup
+- Cosmic Clock time calculations, planetary milestones, refresh cadence, and reset persistence
 
 Not covered by automated tests:
 

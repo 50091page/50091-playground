@@ -2,3 +2,10 @@ node_modules/
 dist/
 .test-dist/
 *.tsbuildinfo
+
+# Local-only Observatory prototype
+/src/features/observatory/
+/src/pages/ObservatoryPage.tsx
+/src/styles/observatory.css
+/tests/observatory.test.ts
+/spec/04_observatory_spec*.md

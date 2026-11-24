@@ -2,8 +2,9 @@ import { Suspense, lazy, useEffect, useLayoutEffect, useState } from "react";
 import { HashRouter, Link, NavLink, Navigate, Route, Routes, useLocation } from "react-router-dom";
 import { WorkspaceBackground } from "./components/WorkspaceBackground";
 import type { HeaderPreviewVariant } from "./dev/HeaderPreviewControls";
+import { loadObservatoryPreview } from "./dev/observatoryPreview";
 import { useTheme } from "./hooks/useTheme";
-import { LADDER_DISABLED, MenuPage, REACTION_PATH, WORKSPACE_TOOLS } from "./pages/MenuPage";
+import { COSMIC_PATH, LADDER_DISABLED, MenuPage, OBSERVATORY_PATH, REACTION_PATH, WORKSPACE_TOOLS } from "./pages/MenuPage";
 
 const ShufflePage = lazy(() =>
   import("./pages/ShufflePage").then((module) => ({ default: module.ShufflePage }))
@@ -18,6 +19,8 @@ const ReactionTimePage = lazy(() =>
   import("./pages/ReactionTimePage").then((module) => ({ default: module.ReactionTimePage }))
 );
 const HeaderPreviewControls = import.meta.env.DEV ? lazy(() => import("./dev/HeaderPreviewControls")) : null;
+const ObservatoryPage = loadObservatoryPreview ? lazy(loadObservatoryPreview) : null;
+const CosmicClockPage = lazy(() => import("./pages/CosmicClockPage"));
 const GA_MEASUREMENT_ID = "G-65CWGN0X87";
 
 function isReactionPath(pathname: string) {
@@ -98,6 +101,8 @@ function AppFrame() {
             <Route path="/shuffle" element={<ShufflePage />} />
             <Route path="/aim-trainer" element={<AimTrainerPage theme={theme} />} />
             <Route path={REACTION_PATH} element={<ReactionTimePage />} />
+            <Route path={COSMIC_PATH} element={<CosmicClockPage />} />
+            {ObservatoryPage && <Route path={OBSERVATORY_PATH} element={<ObservatoryPage />} />}
             <Route path="/ladder" element={LADDER_DISABLED ? <Navigate to="/" replace /> : <LadderPage />} />
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>

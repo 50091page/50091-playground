@@ -1,6 +1,6 @@
 # 50091
 
-팀 섞기(리그 오브 레전드, 배틀그라운드, 오버워치), 오버워치 맵 추첨, 에임 훈련장, 반응속도 테스트를 제공하는 게임 도구 모음입니다. 사다리타기는 현재 비활성 상태입니다.
+팀 섞기(리그 오브 레전드, 배틀그라운드, 오버워치), 오버워치 맵 추첨, 에임 훈련장, 반응속도 테스트와 관찰 콘텐츠인 우주의 시계를 제공하는 사이트입니다. 사다리타기는 비활성 상태입니다. 펭귄 관찰소는 로컬 시안으로, 공개 저장소와 운영 사이트에 포함하지 않습니다.
 
 ## 명세서
 
@@ -10,6 +10,7 @@
 | 팀 섞기 | [게임별 탭, 팀 편성, 오버워치 맵 추첨](spec/01_shuffle_tool_spec_ko.md) | [Team shuffle](spec/01_shuffle_tool_spec.md) |
 | 에임 훈련장 | [훈련 화면, 과녁 옵션, 판정](spec/02_aim_trainer_spec_ko.md) | [Aim trainer](spec/02_aim_trainer_spec.md) |
 | 반응속도 테스트 | [측정 방식, 기록, 한계](spec/03_reaction_time_spec_ko.md) | [Reaction time test](spec/03_reaction_time_spec.md) |
+| 우주의 시계 | [시간, 거리 기준점, 과학 출처](spec/05_cosmic_clock_spec_ko.md) | [Cosmic clock](spec/05_cosmic_clock_spec.md) |
 
 ## 로컬 실행
 
