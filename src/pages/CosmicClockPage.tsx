@@ -2,6 +2,8 @@ import { RotateCcw } from "lucide-react";
 import { useLayoutEffect, useRef, useState, type FormEvent } from "react";
 import { journeyAt, journeyProgress, journeySegment, LIGHT_KM_S, milestonesAtDeparture, MOTIONS } from "../features/cosmic/astronomy";
 import { durationParts, formatDistance, persistResetDeparture, remainingText, selectDeparture, startCosmicUpdates } from "../features/cosmic/clock";
+import journeyPenguin from "../features/cosmic/journey-penguin.webp";
+import journeyPenguinWalk from "../features/cosmic/journey-penguin-walk.webp";
 import { MilestoneSymbol, milestoneLineStyle } from "../features/cosmic/MilestoneSymbol";
 import { safeLocalStorageGet, safeLocalStorageSet } from "../utils/storage";
 import "../styles/cosmic-clock.css";
@@ -31,7 +33,7 @@ function Duration({ seconds }: { seconds: number }) {
 
 export default function CosmicClockPage() {
   const page = useRef<HTMLElement>(null);
-  const particle = useRef<HTMLSpanElement>(null);
+  const marker = useRef<HTMLSpanElement>(null);
   const resetDialog = useRef<HTMLDialogElement>(null);
   const [view, setView] = useState(() => ({ seconds: 0, journey: journeyAt(0), wait: 0 }));
   const [temporary, setTemporary] = useState(false);
@@ -54,7 +56,7 @@ export default function CosmicClockPage() {
         unit: element.querySelector(".cosmic-unit")!,
       };
     });
-    const particleStyle = particle.current!.style;
+    const markerStyle = marker.current!.style;
     const milestones = milestonesAtDeparture(departure.at);
     let journey = journeyAt(0, milestones), lastSecond = -1, lastWait = -1;
     let segment = journeySegment(journey), lastProgress = -1;
@@ -92,7 +94,7 @@ export default function CosmicClockPage() {
       const progress = journeyProgress(km, segment.start.km, segment.end.km);
       if (progress !== lastProgress) {
         lastProgress = progress;
-        particleStyle.translate = `${progress * 100}cqi`;
+        markerStyle.translate = `${progress * 100}cqi`;
       }
       const seconds = Math.floor(elapsed);
       const wait = journey.next ? Math.max(0, (journey.next.km - km) / LIGHT_KM_S) : 0;
@@ -132,8 +134,11 @@ export default function CosmicClockPage() {
         <p className="cosmic-light-total"><Distance id="light" /></p>
         <div className="cosmic-journey">
           <div className="cosmic-journey-track" style={milestoneLineStyle(start.id, end.id)} aria-hidden="true">
-            <span className="cosmic-journey-particle" ref={particle}>
-              <span className="cosmic-journey-spark" />
+            <span className="cosmic-journey-marker" ref={marker} data-walking={next ? "" : undefined}>
+              <picture className="cosmic-journey-sprite">
+                {next && <source media="(prefers-reduced-motion: no-preference)" srcSet={journeyPenguinWalk} />}
+                <img src={journeyPenguin} alt="" width="112" height="112" />
+              </picture>
             </span>
           </div>
           <div className="cosmic-journey-stop cosmic-journey-start">

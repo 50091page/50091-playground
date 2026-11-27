@@ -7,7 +7,7 @@
 1. **Team shuffle** for League of Legends, PUBG, and Overwatch, plus an Overwatch map draw
 2. **Aim trainer**, a reaction minigame rendered with PixiJS
 3. **Reaction time test**, a five-attempt test of responses to a color cue
-4. **Cosmic clock**, a text-only observation of elapsed time, cumulative motion and the distance light could have travelled
+4. **Cosmic clock**, observing elapsed time, cumulative motion and the distance light could have travelled, with a penguin marking its position
 
 The Penguin Observatory is an unreleased prototype available only on development servers with the local source and images. Those files are excluded from the public repository and production site.
 

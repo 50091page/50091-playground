@@ -81,6 +81,7 @@
   --cosmic-journey-width: min(100cqi, 29.5rem);
   --cosmic-stop-half: min(calc(.215 * var(--cosmic-journey-width)), 4.5rem);
   --cosmic-journey-symbol-size: clamp(1.375rem, 4vw, 1.5rem);
+  --cosmic-journey-marker-height: clamp(1.625rem, 6.7vw, 2rem);
   --cosmic-journey-row-gap: .5rem;
   display: grid;
   /* The inner boundaries of the two paired columns are the symbol centers. */
@@ -88,7 +89,7 @@
   grid-template-rows: var(--cosmic-journey-symbol-size) auto;
   row-gap: var(--cosmic-journey-row-gap);
   inline-size: var(--cosmic-journey-width);
-  margin: .625rem auto 0;
+  margin: calc(var(--cosmic-journey-marker-height) - var(--cosmic-journey-symbol-size) / 2 + .25rem) auto 0;
   color: var(--muted);
   font-size: clamp(.72rem, 2.05cqi, .91rem);
   line-height: 1.34;
@@ -106,7 +107,7 @@
 }
 
 .cosmic-journey-track::before {
-  /* Inset only the visible rule; the particle still uses the full center-to-center track. */
+  /* Inset only the visible rule; the marker still uses the full center-to-center track. */
   position: absolute;
   inset-block: 0;
   inset-inline-start: calc(var(--cosmic-journey-symbol-size) * var(--cosmic-line-start));
@@ -149,58 +150,40 @@
   max-inline-size: min(100%, max(0px, calc(var(--cosmic-journey-width) - 2 * var(--cosmic-stop-half) - 4.5rem)));
 }
 
-.cosmic-journey-particle {
+.cosmic-journey-marker {
   position: absolute;
   inset-block-start: 50%;
   left: 0;
   translate: 0;
 }
 
-.cosmic-journey-particle::before,
-.cosmic-journey-particle::after,
-.cosmic-journey-spark {
+.cosmic-journey-sprite {
   position: absolute;
-  top: 0;
-  left: 0;
-  translate: -50% -50%;
+  inset-block-end: 0;
+  inset-inline-start: 0;
+  block-size: var(--cosmic-journey-marker-height);
+  aspect-ratio: 1;
+  overflow: hidden;
+  translate: -50% 0;
 }
 
-.cosmic-journey-particle::before,
-.cosmic-journey-particle::after {
-  content: "";
-}
-
-.cosmic-journey-particle::before {
-  inline-size: 2.125rem;
-  block-size: 2.125rem;
-  border-radius: 50%;
-  background: radial-gradient(circle closest-side, #c7b1fa 0%, #a183e190 27%, #a183e13b 48%, transparent 70%);
-  opacity: .76;
-  scale: 1;
-}
-
-.cosmic-journey-particle::after {
-  inline-size: 6px;
-  block-size: 6px;
-  border-radius: 50%;
-  background: #fff;
-}
-
-.cosmic-journey-spark {
-  inline-size: .75rem;
-  block-size: .875rem;
-  background: #f6efff;
-  opacity: .85;
-  clip-path: polygon(50% 0, 59% 40%, 100% 50%, 59% 60%, 50% 100%, 41% 60%, 0 50%, 41% 40%);
+.cosmic-journey-sprite img {
+  display: block;
+  block-size: 100%;
+  inline-size: 100%;
+  max-inline-size: none;
 }
 
 @media (prefers-reduced-motion: no-preference) {
-  .cosmic-journey-particle::before { animation: cosmic-light-shimmer 2.6s ease-in-out infinite; }
+  .cosmic-journey-marker[data-walking] img {
+    --cosmic-walk-frames: 22;
+    inline-size: calc(100% * var(--cosmic-walk-frames));
+    animation: cosmic-penguin-walk .9s steps(var(--cosmic-walk-frames), end) infinite;
+  }
 }
 
-@keyframes cosmic-light-shimmer {
-  0%, 100% { opacity: .66; scale: .88; }
-  50% { opacity: .94; scale: 1.16; }
+@keyframes cosmic-penguin-walk {
+  to { transform: translateX(-100%); }
 }
 
 .cosmic-light .cosmic-countdown {
